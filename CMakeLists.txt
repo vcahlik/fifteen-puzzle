@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 3.13)
+project(fifteen_puzzle_solver)
+
+set(CMAKE_CXX_STANDARD 14)
+
+set(CXX_FLAGS "-Wall -pedantic -O2 -ggdb")
+
+set(SOURCES "")
+set(HEADERS "")
+
+include_directories(${CMAKE_SOURCE_DIR}/src)
+
+add_subdirectory(src)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_FLAGS}")
+
+add_executable(fifteen_puzzle_solver ${SOURCES} ${HEADERS})
