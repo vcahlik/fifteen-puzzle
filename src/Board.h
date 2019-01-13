@@ -7,7 +7,7 @@
 
 struct PebbleIndex {
 public:
-    PebbleIndex(int row, int col);
+    explicit PebbleIndex(int row = 0, int col = 0);
 
     int row;
     int col;
@@ -24,7 +24,13 @@ public:
 
     explicit Board();
 
+    bool operator==(const Board &other) const;
+
+    bool operator!=(const Board &other) const;
+
     const bool isSolved() const;
+
+    std::array<PebbleIndex, 16> getPebbleIndexes() const;
 
     const std::vector<Board::Direction> getValidDirections() const;
 
@@ -35,6 +41,8 @@ public:
     static const PebbleIndex positionToIndex(int position);
 
     static const int getBlankPositionChange(Direction direction);
+
+    static Direction getOppositeDirection(Direction direction);
 
     void print();
 

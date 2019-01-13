@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
-project(fifteen_puzzle_solver)
+project(fifteen-puzzle-solver)
 
 set(CMAKE_CXX_STANDARD 14)
 

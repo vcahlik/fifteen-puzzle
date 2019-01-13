@@ -11,13 +11,23 @@ PebbleIndex::PebbleIndex(int row, int col)
 }
 
 Board::Board()
-    :   pebbles(solvedPebbles),
-        pebblePositions(solvedPebblePositions) {
+        :   pebbles(solvedPebbles),
+            pebblePositions(solvedPebblePositions) {
 
 }
 
 const bool Board::isSolved() const {
     return pebbles == Board::solvedPebbles;
+}
+
+std::array<PebbleIndex, 16> Board::getPebbleIndexes() const {
+    auto pebbleIndexes = std::array<PebbleIndex, 16>();
+
+    for (int i = 0; i < 16; ++i) {
+        pebbleIndexes[i] = positionToIndex(pebblePositions[i]);
+    }
+
+    return pebbleIndexes;
 }
 
 const std::vector<Board::Direction> Board::getValidDirections() const {
@@ -70,6 +80,27 @@ const int Board::getBlankPositionChange(Board::Direction direction) {
     }
 }
 
+Board::Direction Board::getOppositeDirection(Direction direction) {
+    switch (direction) {
+        case Direction::Up:
+            return Direction::Down;
+        case Direction::Down:
+            return Direction::Up;
+        case Direction::Left:
+            return Direction::Right;
+        case Direction::Right:
+            return Direction::Left;
+    }
+}
+
 void Board::print() {
     std::cout << solvedPebblePositions[0] << std::endl;
+}
+
+bool Board::operator==(const Board &other) const {
+    return pebbles == other.pebbles;
+}
+
+bool Board::operator!=(const Board &other) const {
+    return !(*this == other);
 }
