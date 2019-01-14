@@ -8,7 +8,9 @@
 
 class Node {
 public:
-    Node(std::unique_ptr<Board> board, const Node *parent, Board::Direction lastMoveDirection);
+    explicit Node(Board board);
+
+    Node(Board board, const Node *parent, Board::Direction lastMoveDirection);
 
     const std::vector<Node> getChildren() const;
 
@@ -16,12 +18,14 @@ public:
 
     const int getCost() const;
 
+    const Board &getBoard() const;
+
     bool operator==(const Node &other) const;
 
     bool operator!=(const Node &other) const;
 
 private:
-    std::unique_ptr<Board> board;
+    Board board;
     const Node *parent;
     Board::Direction lastMoveDirection;
     int cost;

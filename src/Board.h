@@ -22,7 +22,9 @@ public:
         Right
     };
 
-    explicit Board();
+    Board();
+
+    explicit Board(std::array<int, 16> pebbles);
 
     bool operator==(const Board &other) const;
 
@@ -47,6 +49,8 @@ public:
     void print();
 
 private:
+    void calculatePebblePositions();
+
     std::array<int, 16> pebbles;
     std::array<int, 16> pebblePositions;
 

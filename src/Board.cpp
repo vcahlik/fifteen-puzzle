@@ -16,6 +16,11 @@ Board::Board()
 
 }
 
+Board::Board(std::array<int, 16> pebbles)
+    :   pebbles(pebbles) {
+    calculatePebblePositions();
+}
+
 const bool Board::isSolved() const {
     return pebbles == Board::solvedPebbles;
 }
@@ -103,4 +108,11 @@ bool Board::operator==(const Board &other) const {
 
 bool Board::operator!=(const Board &other) const {
     return !(*this == other);
+}
+
+void Board::calculatePebblePositions() {
+    for (int position = 0; position < pebbles.size(); ++position) {
+        int pebble = pebbles[position];
+        pebblePositions[pebble] = position;
+    }
 }
