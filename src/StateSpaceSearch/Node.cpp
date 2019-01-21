@@ -7,7 +7,7 @@ Node::Node(Board board)
 }
 
 Node::Node(Board board, const Node *parent, Board::Direction lastMoveDirection)
-    :   board(std::move(board)),
+    :   board(board),
         parent(parent),
         lastMoveDirection(lastMoveDirection) {
     cost = parent->cost + 1;
@@ -20,7 +20,7 @@ const std::vector<Node> Node::getChildren() const {
         if (this->lastMoveDirection != Board::getOppositeDirection(direction)) {
             Board childBoard = Board(board);
             childBoard.moveBlank(direction);
-            children.emplace_back(Node(std::move(childBoard), this, direction));
+            children.emplace_back(Node(childBoard, this, direction));
         }
     }
 
