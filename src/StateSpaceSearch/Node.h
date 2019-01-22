@@ -12,7 +12,7 @@ public:
 
     Node(Board board, const Node *parent, Board::Direction lastMoveDirection);
 
-    std::vector<Node> getChildren() const;
+    std::vector<std::shared_ptr<Node>> getChildren() const;
 
     std::list<Node> getPath() const;
 

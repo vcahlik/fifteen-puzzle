@@ -14,14 +14,14 @@ Node::Node(Board board, const Node *parent, Board::Direction lastMoveDirection)
     cost = parent->cost + 1;
 }
 
-std::vector<Node> Node::getChildren() const {
-    auto children = std::vector<Node>();
+std::vector<std::shared_ptr<Node>> Node::getChildren() const {
+    auto children = std::vector<std::shared_ptr<Node>>();
 
     for (Board::Direction direction : this->board.getValidDirections()) {
         if (this->lastMoveDirection != Board::getOppositeDirection(direction)) {
             Board childBoard = Board(board);
             childBoard.moveBlank(direction);
-            children.emplace_back(Node(childBoard, this, direction));
+            children.emplace_back(std::make_shared<Node>(childBoard, this, direction));
         }
     }
 

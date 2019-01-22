@@ -22,7 +22,7 @@ int IDAStar::solve(const Board &board) {
 
 bool IDAStar::costLimitedDFS(const Board &board, int costLimit) const {
     auto open = std::stack<std::shared_ptr<Node>>();
-    auto initNode = std::make_shared<Node>(Node(Board(board)));
+    auto initNode = std::make_shared<Node>(Board(board));
     open.push(initNode);
 
     while (!open.empty()) {
@@ -34,9 +34,9 @@ bool IDAStar::costLimitedDFS(const Board &board, int costLimit) const {
         }
 
         for (auto &child : node->getChildren()) {
-            int estimatedCost = child.getCost() + heuristic.estimateCost(child.getBoard());
+            int estimatedCost = child->getCost() + heuristic.estimateCost(child->getBoard());
             if (estimatedCost <= costLimit) {
-                open.push(std::make_shared<Node>(child));
+                open.push(child);
             }
         }
     }
