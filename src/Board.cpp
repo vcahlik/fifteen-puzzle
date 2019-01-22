@@ -82,6 +82,8 @@ int Board::getBlankPositionChange(Board::Direction direction) {
             return -1;
         case Direction::Right:
             return 1;
+        default:
+            return 0;
     }
 }
 
@@ -95,6 +97,8 @@ Board::Direction Board::getOppositeDirection(Direction direction) {
             return Direction::Right;
         case Direction::Right:
             return Direction::Left;
+        default:
+            return Direction::None;
     }
 }
 

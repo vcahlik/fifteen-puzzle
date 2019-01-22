@@ -2,7 +2,8 @@
 
 Node::Node(Board board)
         :   board(board),
-            parent(nullptr) {
+            parent(nullptr),
+            lastMoveDirection(Board::Direction::None) {
     cost = 0;
 }
 

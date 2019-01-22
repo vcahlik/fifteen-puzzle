@@ -19,7 +19,8 @@ public:
         Up,
         Down,
         Left,
-        Right
+        Right,
+        None
     };
 
     Board();
