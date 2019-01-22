@@ -12,11 +12,11 @@ public:
 
     Node(Board board, const Node *parent, Board::Direction lastMoveDirection);
 
-    const std::vector<Node> getChildren() const;
+    std::vector<Node> getChildren() const;
 
-    const std::list<Node> getPath() const;
+    std::list<Node> getPath() const;
 
-    const int getCost() const;
+    int getCost() const;
 
     const Board &getBoard() const;
 

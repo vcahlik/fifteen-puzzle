@@ -8,7 +8,7 @@ IDAStar::IDAStar(const ManhattanDistance &heuristic)
 
 }
 
-const int IDAStar::solve(const Board &board) {
+int IDAStar::solve(const Board &board) {
     int costLimit = heuristic.estimateCost(board);
 
     while (true) {
@@ -20,7 +20,7 @@ const int IDAStar::solve(const Board &board) {
     }
 }
 
-const bool IDAStar::costLimitedDFS(const Board &board, int costLimit) const {
+bool IDAStar::costLimitedDFS(const Board &board, int costLimit) const {
     auto open = std::stack<std::shared_ptr<Node>>();
     auto initNode = std::make_shared<Node>(Node(Board(board)));
     open.push(initNode);

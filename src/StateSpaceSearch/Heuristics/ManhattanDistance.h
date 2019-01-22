@@ -9,7 +9,7 @@ class ManhattanDistance {
 public:
     ManhattanDistance();
 
-    const int estimateCost(const Board &board) const;
+    int estimateCost(const Board &board) const;
 
 private:
     std::array<PebbleIndex, 16> solvedPebbleIndexes;

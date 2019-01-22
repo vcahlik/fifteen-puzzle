@@ -4,7 +4,7 @@ ManhattanDistance::ManhattanDistance() {
     solvedPebbleIndexes = Board().getPebbleIndexes();
 }
 
-const int ManhattanDistance::estimateCost(const Board &board) const {
+int ManhattanDistance::estimateCost(const Board &board) const {
     auto pebbleIndexes = board.getPebbleIndexes();
     int cost = 0;
 

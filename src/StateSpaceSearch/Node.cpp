@@ -13,7 +13,7 @@ Node::Node(Board board, const Node *parent, Board::Direction lastMoveDirection)
     cost = parent->cost + 1;
 }
 
-const std::vector<Node> Node::getChildren() const {
+std::vector<Node> Node::getChildren() const {
     auto children = std::vector<Node>();
 
     for (Board::Direction direction : this->board.getValidDirections()) {
@@ -29,12 +29,12 @@ const std::vector<Node> Node::getChildren() const {
     return children;
 }
 
-const std::list<Node> Node::getPath() const {
+std::list<Node> Node::getPath() const {
     // TODO
     return std::list<Node>();
 }
 
-const int Node::getCost() const {
+int Node::getCost() const {
     return cost;
 }
 

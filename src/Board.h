@@ -30,19 +30,19 @@ public:
 
     bool operator!=(const Board &other) const;
 
-    const bool isSolved() const;
+    bool isSolved() const;
 
     std::array<PebbleIndex, 16> getPebbleIndexes() const;
 
-    const std::vector<Board::Direction> getValidDirections() const;
+    std::vector<Board::Direction> getValidDirections() const;
 
-    const int moveBlank(Direction direction);
+    int moveBlank(Direction direction);
 
     void shuffle(int movesCnt);
 
-    static const PebbleIndex positionToIndex(int position);
+    static PebbleIndex positionToIndex(int position);
 
-    static const int getBlankPositionChange(Direction direction);
+    static int getBlankPositionChange(Direction direction);
 
     static Direction getOppositeDirection(Direction direction);
 

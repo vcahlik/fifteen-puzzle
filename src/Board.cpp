@@ -21,7 +21,7 @@ Board::Board(std::array<int, 16> pebbles)
     calculatePebblePositions();
 }
 
-const bool Board::isSolved() const {
+bool Board::isSolved() const {
     return pebbles == Board::solvedPebbles;
 }
 
@@ -35,7 +35,7 @@ std::array<PebbleIndex, 16> Board::getPebbleIndexes() const {
     return pebbleIndexes;
 }
 
-const std::vector<Board::Direction> Board::getValidDirections() const {
+std::vector<Board::Direction> Board::getValidDirections() const {
     auto directions = std::vector<Board::Direction>();
     PebbleIndex indexOfBlank = positionToIndex(pebblePositions[0]);
 
@@ -47,7 +47,7 @@ const std::vector<Board::Direction> Board::getValidDirections() const {
     return directions;
 }
 
-const int Board::moveBlank(const Board::Direction direction) {
+int Board::moveBlank(const Board::Direction direction) {
     int oldBlankPosition = pebblePositions[0];
     int newBlankPosition = oldBlankPosition + getBlankPositionChange(direction);
     int replacedPebble = pebbles[newBlankPosition];
@@ -68,11 +68,11 @@ void Board::shuffle(int movesCnt) {
     }
 }
 
-const PebbleIndex Board::positionToIndex(int position) {
+PebbleIndex Board::positionToIndex(int position) {
     return PebbleIndex(position / 4, position % 4);
 }
 
-const int Board::getBlankPositionChange(Board::Direction direction) {
+int Board::getBlankPositionChange(Board::Direction direction) {
     switch (direction) {
         case Direction::Up:
             return -4;
