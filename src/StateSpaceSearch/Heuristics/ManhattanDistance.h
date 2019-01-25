@@ -4,12 +4,13 @@
 
 #include <array>
 #include "Board.h"
+#include "Heuristic.h"
 
-class ManhattanDistance {
+class ManhattanDistance : public Heuristic {
 public:
     ManhattanDistance();
 
-    int estimateCost(const Board &board) const;
+    int estimateCost(const Board &board) const override;
 
 private:
     std::array<PebbleIndex, 16> solvedPebbleIndexes;
