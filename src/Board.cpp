@@ -47,6 +47,21 @@ std::vector<Board::Direction> Board::getValidDirections() const {
     return directions;
 }
 
+Board::Direction Board::getOppositeDirection(Direction direction) {
+    switch (direction) {
+        case Direction::Up:
+            return Direction::Down;
+        case Direction::Down:
+            return Direction::Up;
+        case Direction::Left:
+            return Direction::Right;
+        case Direction::Right:
+            return Direction::Left;
+        default:
+            return Direction::None;
+    }
+}
+
 int Board::moveBlank(const Board::Direction direction) {
     int oldBlankPosition = pebblePositions[0];
     int newBlankPosition = oldBlankPosition + getBlankPositionChange(direction);
@@ -68,40 +83,6 @@ void Board::shuffle(int movesCnt) {
     }
 }
 
-PebbleIndex Board::positionToIndex(int position) {
-    return PebbleIndex(position / 4, position % 4);
-}
-
-int Board::getBlankPositionChange(Board::Direction direction) {
-    switch (direction) {
-        case Direction::Up:
-            return -4;
-        case Direction::Down:
-            return 4;
-        case Direction::Left:
-            return -1;
-        case Direction::Right:
-            return 1;
-        default:
-            return 0;
-    }
-}
-
-Board::Direction Board::getOppositeDirection(Direction direction) {
-    switch (direction) {
-        case Direction::Up:
-            return Direction::Down;
-        case Direction::Down:
-            return Direction::Up;
-        case Direction::Left:
-            return Direction::Right;
-        case Direction::Right:
-            return Direction::Left;
-        default:
-            return Direction::None;
-    }
-}
-
 void Board::print() {
     std::cout << solvedPebblePositions[0] << std::endl;
 }
@@ -118,5 +99,24 @@ void Board::calculatePebblePositions() {
     for (int position = 0; position < pebbles.size(); ++position) {
         int pebble = pebbles[position];
         pebblePositions[pebble] = position;
+    }
+}
+
+PebbleIndex Board::positionToIndex(int position) {
+    return PebbleIndex(position / 4, position % 4);
+}
+
+int Board::getBlankPositionChange(Board::Direction direction) {
+    switch (direction) {
+        case Direction::Up:
+            return -4;
+        case Direction::Down:
+            return 4;
+        case Direction::Left:
+            return -1;
+        case Direction::Right:
+            return 1;
+        default:
+            return 0;
     }
 }

@@ -37,20 +37,20 @@ public:
 
     std::vector<Board::Direction> getValidDirections() const;
 
+    static Direction getOppositeDirection(Direction direction);
+
     int moveBlank(Direction direction);
 
     void shuffle(int movesCnt);
-
-    static PebbleIndex positionToIndex(int position);
-
-    static int getBlankPositionChange(Direction direction);
-
-    static Direction getOppositeDirection(Direction direction);
 
     void print();
 
 private:
     void calculatePebblePositions();
+
+    static PebbleIndex positionToIndex(int position);
+
+    static int getBlankPositionChange(Direction direction);
 
     std::array<int, 16> pebbles;
     std::array<int, 16> pebblePositions;
