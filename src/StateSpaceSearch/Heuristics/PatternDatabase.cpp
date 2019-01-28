@@ -1,7 +1,10 @@
 #include <algorithm>
+#include <StateSpaceSearch/Node.h>
+#include <queue>
 #include "PatternDatabase.h"
 
-PatternDatabase::PatternDatabase(std::set<std::vector<int>> patternsDefinition) {
+PatternDatabase::PatternDatabase(int maxPatternLength) {
+    auto patternsDefinition = getPatternsDefinition(maxPatternLength);
     for (const auto &pebbles : patternsDefinition) {
         subproblems.emplace_back(pebbles);
     }
@@ -13,6 +16,12 @@ int PatternDatabase::estimateCost(const Board &board) const {
         cost += subproblem.estimateCost(board);
     }
     return cost;
+}
+
+void PatternDatabase::preCalculate() {
+    for (auto &subproblem : subproblems) {
+        subproblem.preCalculate();
+    }
 }
 
 PatternDatabase::Database::Database(int pebblesCnt)
@@ -74,6 +83,92 @@ PatternDatabase::Subproblem::Subproblem(std::vector<int> pebbles)
 }
 
 int PatternDatabase::Subproblem::estimateCost(const Board &board) const {
-    //TODO
-    return 0;
+    return database.cost(board.getPebblePositionsWithBlank(pebbles));
+}
+
+void PatternDatabase::Subproblem::preCalculate() {
+    auto openQueue = std::queue<std::shared_ptr<Node>>();
+    auto openSet = std::set<std::shared_ptr<Node>>();
+    auto closed = std::set<std::shared_ptr<Node>>();
+
+    auto initNode = std::make_shared<Node>(PartialBoard(pebbles));
+    openQueue.push(initNode);
+    openSet.insert(initNode);
+
+    while (!openQueue.empty()) {
+        auto node = openQueue.front();
+        database.saveCost(node->getBoard().getPebblePositionsWithBlank(pebbles), node->getCost());
+
+        for (Board::Direction direction : node->getBoard().getValidDirections()) {
+            if (node->getLastMoveDirection() != Board::getOppositeDirection(direction)) {
+                auto childBoard = Board(node->getBoard());
+                int movedPebble = childBoard.moveBlank(direction);
+                int cost = node->getCost();
+                if (std::find(pebbles.begin(), pebbles.end(), movedPebble) != pebbles.end()) {
+                    cost += 1;
+                }
+                auto childNode = std::make_shared<Node>(childBoard, nullptr, direction, cost);
+                if ((std::find_if(openSet.begin(), openSet.end(), [&] (const std::shared_ptr<Node> &compNode) {
+                                return *childNode == *compNode;
+                            }) == openSet.end())
+                        && (std::find_if(closed.begin(), closed.end(), [&] (const std::shared_ptr<Node> &compNode) {
+                                return *childNode == *compNode;
+                            }) == closed.end())) {
+                    openQueue.push(childNode);
+                    openSet.insert(childNode);
+                }
+            }
+        }
+
+        openQueue.pop();
+        openSet.erase(node);
+        closed.insert(node);
+    }
+}
+
+PatternDatabase::Subproblem::PartialBoard::PartialBoard(const std::vector<int> &validPebbles) {
+    for (int i = 0; i < solvedPebbles.size(); ++i) {
+        int pebble = solvedPebbles[i];
+        if (pebble == 0 || std::find(validPebbles.begin(), validPebbles.end(), pebble) != validPebbles.end()) {
+            // Pebble is valid (or zero)
+            pebbles[i] = pebble;
+            pebblePositions[pebble] = i;
+        } else {
+            pebbles[i] = IGNORED;
+            pebblePositions[pebble] = IGNORED;
+        }
+    }
+}
+
+std::array<PebbleIndex, 16> PatternDatabase::Subproblem::PartialBoard::getPebbleIndexes() const {
+    throw std::runtime_error("Not implemented yet");
+}
+
+void PatternDatabase::Subproblem::PartialBoard::setPebblePosition(int pebble, int position) {
+    if (pebblePositions[pebble] != IGNORED) {
+        pebblePositions[pebble] = position;
+    }
+}
+
+std::set<std::vector<int>> PatternDatabase::getPatternsDefinition(int maxLen) {
+    switch (maxLen) {
+        case 2:
+            return {{1, 2},
+                    {3, 4},
+                    {4, 5},
+                    {6, 7},
+                    {8, 9},
+                    {9, 10},
+                    {11, 12},
+                    {13, 14},
+                    {15}};
+        case 3:
+            return {{1, 2, 5},
+                    {3, 4, 8},
+                    {6, 9, 10},
+                    {7, 11, 12},
+                    {13, 14, 15}};
+        default:
+            throw std::invalid_argument("Not implemented yet.");
+    }
 }

@@ -7,12 +7,11 @@ Node::Node(Board board)
     cost = 0;
 }
 
-Node::Node(Board board, const Node *parent, Board::Direction lastMoveDirection)
+Node::Node(Board board, const Node *parent, Board::Direction lastMoveDirection, int cost)
     :   board(board),
         parent(parent),
-        lastMoveDirection(lastMoveDirection) {
-    cost = parent->cost + 1;
-}
+        lastMoveDirection(lastMoveDirection),
+        cost(cost) {}
 
 std::vector<std::shared_ptr<Node>> Node::getChildren() const {
     auto children = std::vector<std::shared_ptr<Node>>();
@@ -21,7 +20,7 @@ std::vector<std::shared_ptr<Node>> Node::getChildren() const {
         if (this->lastMoveDirection != Board::getOppositeDirection(direction)) {
             Board childBoard = Board(board);
             childBoard.moveBlank(direction);
-            children.emplace_back(std::make_shared<Node>(childBoard, this, direction));
+            children.emplace_back(std::make_shared<Node>(childBoard, this, direction, cost + 1));
         }
     }
 
@@ -41,6 +40,10 @@ int Node::getCost() const {
 
 const Board &Node::getBoard() const {
     return board;
+}
+
+Board::Direction Node::getLastMoveDirection() const {
+    return lastMoveDirection;
 }
 
 bool Node::operator==(const Node &other) const {

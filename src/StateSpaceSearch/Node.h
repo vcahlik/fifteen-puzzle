@@ -10,7 +10,7 @@ class Node {
 public:
     explicit Node(Board board);
 
-    Node(Board board, const Node *parent, Board::Direction lastMoveDirection);
+    Node(Board board, const Node *parent, Board::Direction lastMoveDirection, int cost);
 
     std::vector<std::shared_ptr<Node>> getChildren() const;
 
@@ -19,6 +19,8 @@ public:
     int getCost() const;
 
     const Board &getBoard() const;
+
+    Board::Direction getLastMoveDirection() const;
 
     bool operator==(const Node &other) const;
 

@@ -7,14 +7,14 @@
 
 class IDAStar {
 public:
-    explicit IDAStar(const ManhattanDistance &heuristic);
+    explicit IDAStar(const Heuristic &heuristic);
 
     int solve(const Board &board);
 
 private:
     bool costLimitedDFS(const Board &board, int costLimit) const;
 
-    ManhattanDistance heuristic;
+    const Heuristic &heuristic;
 
 };
 

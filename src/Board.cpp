@@ -62,6 +62,16 @@ Board::Direction Board::getOppositeDirection(Direction direction) {
     }
 }
 
+std::vector<int> Board::getPebblePositionsWithBlank(std::vector<int> pebbles) const {
+    std::vector<int> positions;
+    positions.reserve(pebbles.size() + 1);
+    positions.push_back(pebblePositions[0]);
+    for (auto pebble : pebbles) {
+        positions.push_back(pebblePositions[pebble]);
+    }
+    return positions;
+}
+
 int Board::moveBlank(const Board::Direction direction) {
     int oldBlankPosition = pebblePositions[0];
     int newBlankPosition = oldBlankPosition + getBlankPositionChange(direction);
@@ -69,8 +79,8 @@ int Board::moveBlank(const Board::Direction direction) {
 
     pebbles[newBlankPosition] = 0;
     pebbles[oldBlankPosition] = replacedPebble;
-    pebblePositions[0] = newBlankPosition;
-    pebblePositions[replacedPebble] = oldBlankPosition;
+    setPebblePosition(0, newBlankPosition);
+    setPebblePosition(replacedPebble, oldBlankPosition);
 
     return replacedPebble;
 }
@@ -95,10 +105,14 @@ bool Board::operator!=(const Board &other) const {
     return !(*this == other);
 }
 
+void Board::setPebblePosition(int pebble, int position) {
+    pebblePositions[pebble] = position;
+}
+
 void Board::calculatePebblePositions() {
     for (int position = 0; position < pebbles.size(); ++position) {
         int pebble = pebbles[position];
-        pebblePositions[pebble] = position;
+        setPebblePosition(pebble, position);
     }
 }
 

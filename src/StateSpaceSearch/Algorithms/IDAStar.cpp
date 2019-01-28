@@ -3,10 +3,8 @@
 #include <stack>
 #include <memory>
 
-IDAStar::IDAStar(const ManhattanDistance &heuristic)
-    :   heuristic(heuristic) {
-
-}
+IDAStar::IDAStar(const Heuristic &heuristic)
+    :   heuristic(heuristic) {}
 
 int IDAStar::solve(const Board &board) {
     int costLimit = heuristic.estimateCost(board);

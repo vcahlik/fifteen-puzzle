@@ -9,9 +9,11 @@
 
 class PatternDatabase : public Heuristic {
 public:
-    explicit PatternDatabase(std::set<std::vector<int>> patternsDefinition);
+    explicit PatternDatabase(int maxPatternLength);
 
     int estimateCost(const Board &board) const override;
+
+    void preCalculate();
 
 private:
     class Database {
@@ -46,11 +48,27 @@ private:
 
         int estimateCost(const Board &board) const;
 
+        void preCalculate();
+
     private:
+        class PartialBoard : public Board {
+        public:
+            explicit PartialBoard(const std::vector<int> &validPebbles);
+
+            std::array<PebbleIndex, 16> getPebbleIndexes() const override;
+
+        protected:
+            void setPebblePosition(int pebble, int position) override;
+
+            const int IGNORED = -1;
+        };
+
         const std::vector<int> pebbles;
         Database database;
 
     };
+
+    static std::set<std::vector<int>> getPatternsDefinition(int maxLen);
 
     std::list<Subproblem> subproblems;
 

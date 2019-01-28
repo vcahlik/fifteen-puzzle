@@ -33,11 +33,13 @@ public:
 
     bool isSolved() const;
 
-    std::array<PebbleIndex, 16> getPebbleIndexes() const;
+    virtual std::array<PebbleIndex, 16> getPebbleIndexes() const;
 
     std::vector<Board::Direction> getValidDirections() const;
 
     static Direction getOppositeDirection(Direction direction);
+
+    std::vector<int> getPebblePositionsWithBlank(std::vector<int> pebbles) const;
 
     int moveBlank(Direction direction);
 
@@ -45,18 +47,21 @@ public:
 
     void print();
 
+protected:
+    virtual void setPebblePosition(int pebble, int position);
+
+    static constexpr std::array<int, 16> solvedPebbles = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0};
+    static constexpr std::array<int, 16> solvedPebblePositions = {15, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+
+    std::array<int, 16> pebbles;
+    std::array<int, 16> pebblePositions;
+
 private:
     void calculatePebblePositions();
 
     static PebbleIndex positionToIndex(int position);
 
     static int getBlankPositionChange(Direction direction);
-
-    std::array<int, 16> pebbles;
-    std::array<int, 16> pebblePositions;
-
-    static constexpr std::array<int, 16> solvedPebbles = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0};
-    static constexpr std::array<int, 16> solvedPebblePositions = {15, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
 
 };
 
