@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <StateSpaceSearch/Node.h>
 #include <queue>
+#include <iostream>
 #include "PatternDatabase.h"
 
 PatternDatabase::PatternDatabase(int maxPatternLength) {
@@ -87,11 +88,12 @@ int PatternDatabase::Subproblem::estimateCost(const Board &board) const {
 }
 
 void PatternDatabase::Subproblem::preCalculate() {
-    auto openQueue = std::queue<std::shared_ptr<Node>>();
-    auto openSet = std::set<std::shared_ptr<Node>>();
-    auto closed = std::set<std::shared_ptr<Node>>();
+    std::cout << "precalculating" << std::endl;
+    auto openQueue = std::queue<std::shared_ptr<PreCalculationNode>>();
+    auto openSet = std::set<std::shared_ptr<PreCalculationNode>>();
+    auto closed = std::set<std::shared_ptr<PreCalculationNode>>();
 
-    auto initNode = std::make_shared<Node>(PartialBoard(pebbles));
+    auto initNode = std::make_shared<PreCalculationNode>(PartialBoard(pebbles));
     openQueue.push(initNode);
     openSet.insert(initNode);
 
@@ -101,21 +103,21 @@ void PatternDatabase::Subproblem::preCalculate() {
 
         for (Board::Direction direction : node->getBoard().getValidDirections()) {
             if (node->getLastMoveDirection() != Board::getOppositeDirection(direction)) {
-                auto childBoard = Board(node->getBoard());
+                auto childBoard = PartialBoard(node->getBoard());
                 int movedPebble = childBoard.moveBlank(direction);
-                int cost = node->getCost();
+                int childCost = node->getCost();
                 if (std::find(pebbles.begin(), pebbles.end(), movedPebble) != pebbles.end()) {
-                    cost += 1;
+                    childCost += 1;
                 }
-                auto childNode = std::make_shared<Node>(childBoard, nullptr, direction, cost);
-                if ((std::find_if(openSet.begin(), openSet.end(), [&] (const std::shared_ptr<Node> &compNode) {
-                                return *childNode == *compNode;
-                            }) == openSet.end())
-                        && (std::find_if(closed.begin(), closed.end(), [&] (const std::shared_ptr<Node> &compNode) {
-                                return *childNode == *compNode;
-                            }) == closed.end())) {
-                    openQueue.push(childNode);
-                    openSet.insert(childNode);
+                auto child = std::make_shared<PreCalculationNode>(childBoard, direction, childCost);
+                if ((std::find_if(openSet.begin(), openSet.end(), [&] (const std::shared_ptr<PreCalculationNode> &compNode) {
+                    return *child == *compNode;
+                }) == openSet.end())
+                    && (std::find_if(closed.begin(), closed.end(), [&] (const std::shared_ptr<PreCalculationNode> &compNode) {
+                    return *child == *compNode;
+                }) == closed.end())) {
+                    openQueue.push(child);
+                    openSet.insert(child);
                 }
             }
         }
@@ -144,10 +146,39 @@ std::array<PebbleIndex, 16> PatternDatabase::Subproblem::PartialBoard::getPebble
     throw std::runtime_error("Not implemented yet");
 }
 
+bool PatternDatabase::Subproblem::PartialBoard::isSolved() const {
+    throw std::runtime_error("Not implemented yet");
+}
+
 void PatternDatabase::Subproblem::PartialBoard::setPebblePosition(int pebble, int position) {
-    if (pebblePositions[pebble] != IGNORED) {
+    if (pebble != IGNORED && pebblePositions[pebble] != IGNORED) {
         pebblePositions[pebble] = position;
     }
+}
+
+PatternDatabase::Subproblem::PreCalculationNode::PreCalculationNode(PartialBoard board, Board::Direction lastMoveDirection, int cost)
+    :   board(std::move(board)),
+        lastMoveDirection(lastMoveDirection),
+        cost(cost) {}
+
+int PatternDatabase::Subproblem::PreCalculationNode::getCost() const {
+    return cost;
+}
+
+const PatternDatabase::Subproblem::PartialBoard &PatternDatabase::Subproblem::PreCalculationNode::getBoard() const {
+    return board;
+}
+
+Board::Direction PatternDatabase::Subproblem::PreCalculationNode::getLastMoveDirection() const {
+    return lastMoveDirection;
+}
+
+bool PatternDatabase::Subproblem::PreCalculationNode::operator==(const PreCalculationNode &other) const {
+    return board == other.board;
+}
+
+bool PatternDatabase::Subproblem::PreCalculationNode::operator!=(const PreCalculationNode &other) const {
+    return !(*this == other);
 }
 
 std::set<std::vector<int>> PatternDatabase::getPatternsDefinition(int maxLen) {

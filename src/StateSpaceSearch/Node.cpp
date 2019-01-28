@@ -1,14 +1,14 @@
 #include "Node.h"
 
 Node::Node(Board board)
-        :   board(board),
+        :   board(std::move(board)),
             parent(nullptr),
             lastMoveDirection(Board::Direction::None) {
     cost = 0;
 }
 
 Node::Node(Board board, const Node *parent, Board::Direction lastMoveDirection, int cost)
-    :   board(board),
+    :   board(std::move(board)),
         parent(parent),
         lastMoveDirection(lastMoveDirection),
         cost(cost) {}
@@ -18,7 +18,7 @@ std::vector<std::shared_ptr<Node>> Node::getChildren() const {
 
     for (Board::Direction direction : this->board.getValidDirections()) {
         if (this->lastMoveDirection != Board::getOppositeDirection(direction)) {
-            Board childBoard = Board(board);
+            auto childBoard = Board(board);
             childBoard.moveBlank(direction);
             children.emplace_back(std::make_shared<Node>(childBoard, this, direction, cost + 1));
         }

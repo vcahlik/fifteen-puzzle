@@ -31,7 +31,7 @@ public:
 
     bool operator!=(const Board &other) const;
 
-    bool isSolved() const;
+    virtual bool isSolved() const;
 
     virtual std::array<PebbleIndex, 16> getPebbleIndexes() const;
 

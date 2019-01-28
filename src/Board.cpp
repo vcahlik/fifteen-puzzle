@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include "Board.h"
 
 constexpr std::array<int, 16> Board::solvedPebbles;
@@ -94,7 +95,12 @@ void Board::shuffle(int movesCnt) {
 }
 
 void Board::print() {
-    std::cout << solvedPebblePositions[0] << std::endl;
+    for (int row = 0; row < 4; ++row) {
+        for (int col = 0; col < 4; ++col) {
+            std::cout << std::setw(3) << pebbles[4 * row + col];
+        }
+        std::cout << std::endl;
+    }
 }
 
 bool Board::operator==(const Board &other) const {

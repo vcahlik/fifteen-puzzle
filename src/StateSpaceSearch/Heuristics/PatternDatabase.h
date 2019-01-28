@@ -5,6 +5,7 @@
 #include <set>
 #include <list>
 #include <cstddef>
+#include <memory>
 #include "Heuristic.h"
 
 class PatternDatabase : public Heuristic {
@@ -57,10 +58,32 @@ private:
 
             std::array<PebbleIndex, 16> getPebbleIndexes() const override;
 
+            bool isSolved() const override;
+
         protected:
             void setPebblePosition(int pebble, int position) override;
 
             const int IGNORED = -1;
+        };
+
+        class PreCalculationNode {
+        public:
+            explicit PreCalculationNode(PartialBoard board, Board::Direction lastMoveDirection = Board::Direction::None, int cost = 0);
+
+            int getCost() const;
+
+            const PartialBoard &getBoard() const;
+
+            Board::Direction getLastMoveDirection() const;
+
+            bool operator==(const PreCalculationNode &other) const;
+
+            bool operator!=(const PreCalculationNode &other) const;
+
+        private:
+            PartialBoard board;
+            Board::Direction lastMoveDirection;
+            int cost;
         };
 
         const std::vector<int> pebbles;
