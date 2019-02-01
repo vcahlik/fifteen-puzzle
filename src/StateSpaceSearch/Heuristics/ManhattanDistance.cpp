@@ -14,3 +14,7 @@ int ManhattanDistance::estimateCost(const Board &board) const {
 
     return cost;
 }
+
+std::string ManhattanDistance::name() const {
+    return "Manhattan distance heuristic";
+}

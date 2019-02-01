@@ -38,6 +38,7 @@ std::array<PebbleIndex, 16> Board::getPebbleIndexes() const {
 
 std::vector<Board::Direction> Board::getValidDirections() const {
     auto directions = std::vector<Board::Direction>();
+    directions.reserve(4);
     PebbleIndex indexOfBlank = positionToIndex(pebblePositions[0]);
 
     if (indexOfBlank.row > 0) {directions.push_back(Direction::Up);}

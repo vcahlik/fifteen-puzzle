@@ -38,6 +38,10 @@ int Node::getCost() const {
     return cost;
 }
 
+void Node::setCost(int cost) {
+    this->cost = cost;
+}
+
 const Board &Node::getBoard() const {
     return board;
 }

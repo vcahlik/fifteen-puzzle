@@ -7,6 +7,8 @@
 class Heuristic {
 public:
     virtual int estimateCost(const Board &board) const = 0;
+
+    virtual std::string name() const = 0;
 };
 
 

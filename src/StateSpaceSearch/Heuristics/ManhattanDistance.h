@@ -12,6 +12,8 @@ public:
 
     int estimateCost(const Board &board) const override;
 
+    std::string name() const override;
+
 private:
     std::array<PebbleIndex, 16> solvedPebbleIndexes;
 };

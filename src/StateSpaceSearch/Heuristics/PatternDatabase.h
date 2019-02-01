@@ -14,6 +14,8 @@ public:
 
     int estimateCost(const Board &board) const override;
 
+    std::string name() const override;
+
     void preCalculate();
 
 private:
@@ -31,10 +33,10 @@ private:
 
         void saveCost(const std::vector<int> &pebblePositions, int cost);
 
+        int size() const;
+
     private:
         int index(const std::vector<int> &pebblePositions) const;
-
-        int size() const;
 
         void calculateIndexCoefficients();
 
@@ -50,6 +52,8 @@ private:
         int estimateCost(const Board &board) const;
 
         void preCalculate();
+
+        std::string name() const;
 
     private:
         class PartialBoard : public Board {
@@ -71,6 +75,8 @@ private:
             explicit PreCalculationNode(PartialBoard board, Board::Direction lastMoveDirection = Board::Direction::None, int cost = 0);
 
             int getCost() const;
+
+            void setCost(int cost);
 
             const PartialBoard &getBoard() const;
 
