@@ -9,6 +9,7 @@ void randomSolveBenchmark(std::list<Heuristic *> heuristics, int shuffleCnt, int
         Board board;
         board.shuffle(shuffleCnt);
 
+        int lastCost = -1;
         for (auto &heuristic : heuristics) {
             IDAStar search(*heuristic);
             auto startTime = std::chrono::high_resolution_clock::now();
@@ -18,6 +19,11 @@ void randomSolveBenchmark(std::list<Heuristic *> heuristics, int shuffleCnt, int
 
             infoMessage(heuristic->name() + ": cost " + std::to_string(cost) + ", duration: " +
                         std::to_string(duration / 1000.0));
+
+            if (lastCost >= 0 && lastCost != cost) {
+                throw std::runtime_error("Optimal solutions not equal");
+            }
+            lastCost = cost;
         }
     }
 }
@@ -37,8 +43,6 @@ void boardShufflingBenchmark(int shuffleCnt, int runsCnt) {
 }
 
 void heuristicsBenchmark(std::list<Heuristic *> heuristics, int shuffleCnt, int runsCnt) {
-    ManhattanDistance mh;
-
     for (int i = 0; (runsCnt < 0) || (i < runsCnt); ++i) {
         Board board;
         board.shuffle(shuffleCnt);
@@ -48,7 +52,7 @@ void heuristicsBenchmark(std::list<Heuristic *> heuristics, int shuffleCnt, int 
             infoMessage(heuristic->name() + ": cost " + std::to_string(cost));
         }
 
-        IDAStar search(mh);
+        IDAStar search(**heuristics.begin());
         infoMessage("Real cost:" + std::to_string(search.solve(board)));
     }
 }
