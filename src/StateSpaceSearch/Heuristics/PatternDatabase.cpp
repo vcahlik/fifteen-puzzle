@@ -99,9 +99,17 @@ int PatternDatabase::Subproblem::estimateCost(const Board &board) const {
 }
 
 void PatternDatabase::Subproblem::preCalculate() {
+    auto hash = [] (const std::shared_ptr<PreCalculationNode> &elem) -> size_t {
+        return elem->getBoard().hash();
+    };
+
+    auto equal = [] (const std::shared_ptr<PreCalculationNode> &lhs, const std::shared_ptr<PreCalculationNode> &rhs) {
+        return *lhs == *rhs;
+    };
+
     auto openQueue = std::queue<std::shared_ptr<PreCalculationNode>>();
-    auto openSet = std::unordered_set<std::shared_ptr<PreCalculationNode>>();
-    auto closed = std::unordered_set<std::shared_ptr<PreCalculationNode>>();
+    auto openSet = std::unordered_set<std::shared_ptr<PreCalculationNode>, decltype(hash), decltype(equal)>(1000, hash, equal);
+    auto closed = std::unordered_set<std::shared_ptr<PreCalculationNode>, decltype(hash), decltype(equal)>(1000, hash, equal);
 
     auto initNode = std::make_shared<PreCalculationNode>(PartialBoard(pebbles));
     openQueue.push(initNode);
@@ -109,7 +117,7 @@ void PatternDatabase::Subproblem::preCalculate() {
 
     while (!openQueue.empty()) {
         auto expansionQueue = std::queue<std::shared_ptr<PreCalculationNode>>();
-        auto expansionSet = std::unordered_set<std::shared_ptr<PreCalculationNode>>();
+        auto expansionSet = std::unordered_set<std::shared_ptr<PreCalculationNode>, decltype(hash), decltype(equal)>(50, hash, equal);
         auto popped = openQueue.front();
         expansionQueue.push(popped);
         expansionSet.insert(popped);
@@ -131,16 +139,9 @@ void PatternDatabase::Subproblem::preCalculate() {
                 auto childBoard = PartialBoard(node->getBoard());
                 int movedPebble = childBoard.moveBlank(direction);
                 auto child = std::make_shared<PreCalculationNode>(childBoard, direction, node->getCost());
-                if ((std::find_if(expansionSet.begin(), expansionSet.end(), [&] (const std::shared_ptr<PreCalculationNode> &compNode) {
-                            return *child == *compNode;
-                        }) == expansionSet.end())
-                    && (std::find_if(openSet.begin(), openSet.end(), [&] (const std::shared_ptr<PreCalculationNode> &compNode) {
-                            return *child == *compNode;
-                        }) == openSet.end())
-                        && (std::find_if(closed.begin(), closed.end(), [&] (const std::shared_ptr<PreCalculationNode> &compNode) {
-                            return *child == *compNode;
-                        }) == closed.end())) {
-
+                if ((expansionSet.count(child) == 0)
+                        && (openSet.count(child) == 0)
+                        && (closed.count(child) == 0)) {
                     if (std::find(pebbles.begin(), pebbles.end(), movedPebble) != pebbles.end()) {
                         child->setCost(child->getCost() + 1);
                         openQueue.push(child);
@@ -252,6 +253,15 @@ std::set<std::vector<int>> PatternDatabase::getPatternsDefinition(int maxLen) {
                     {6, 9, 10},
                     {7, 11, 12},
                     {13, 14, 15}};
+        case 4:
+            return {{1, 2, 5, 6},
+                    {3, 4, 7, 8},
+                    {9, 10, 13, 14},
+                    {11, 12, 15}};
+        case 5:
+            return {{1, 2, 3, 5, 6},
+                    {4, 7, 8, 11, 12},
+                    {9, 10, 13, 14, 15}};
         default:
             throw std::invalid_argument("Not implemented yet.");
     }

@@ -45,6 +45,8 @@ public:
 
     void shuffle(int movesCnt);
 
+    size_t hash() const;
+
     void print();
 
 protected:

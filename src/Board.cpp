@@ -95,6 +95,14 @@ void Board::shuffle(int movesCnt) {
     }
 }
 
+size_t Board::hash() const {
+    size_t res = 0;
+    for (int i = 0; i < pebbles.size(); ++i) {
+        res += pebbles[i] << i;
+    }
+    return res;
+}
+
 void Board::print() {
     for (int row = 0; row < 4; ++row) {
         for (int col = 0; col < 4; ++col) {
