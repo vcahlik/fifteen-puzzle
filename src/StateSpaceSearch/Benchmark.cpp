@@ -9,14 +9,15 @@ void randomSolveBenchmark(std::list<Heuristic *> heuristics, int shuffleCnt, int
         Board board;
         board.shuffle(shuffleCnt);
 
-        for (auto heuristic : heuristics) {
+        for (auto &heuristic : heuristics) {
             IDAStar search(*heuristic);
             auto startTime = std::chrono::high_resolution_clock::now();
             int cost = search.solve(board);
             auto endTime = std::chrono::high_resolution_clock::now();
             auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
 
-            debugPrint(heuristic->name() + ": cost " + std::to_string(cost) + ", duration: " + std::to_string(duration / 1000.0));
+            infoMessage(heuristic->name() + ": cost " + std::to_string(cost) + ", duration: " +
+                        std::to_string(duration / 1000.0));
         }
     }
 }
@@ -32,7 +33,7 @@ void boardShufflingBenchmark(int shuffleCnt, int runsCnt) {
     auto endTime = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
 
-    debugPrint("Board shuffling benchmark duration: " + std::to_string(duration / 1000.0));
+    infoMessage("Board shuffling benchmark duration: " + std::to_string(duration / 1000.0));
 }
 
 void heuristicsBenchmark(std::list<Heuristic *> heuristics, int shuffleCnt, int runsCnt) {
@@ -42,12 +43,12 @@ void heuristicsBenchmark(std::list<Heuristic *> heuristics, int shuffleCnt, int 
         Board board;
         board.shuffle(shuffleCnt);
 
-        for (auto heuristic : heuristics) {
+        for (auto &heuristic : heuristics) {
             int cost = heuristic->estimateCost(board);
-            debugPrint(heuristic->name() + ": cost " + std::to_string(cost));
+            infoMessage(heuristic->name() + ": cost " + std::to_string(cost));
         }
 
         IDAStar search(mh);
-        debugPrint("Real cost:" + std::to_string(search.solve(board)));
+        infoMessage("Real cost:" + std::to_string(search.solve(board)));
     }
 }

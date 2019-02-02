@@ -9,7 +9,7 @@ class IDAStar {
 public:
     explicit IDAStar(const Heuristic &heuristic);
 
-    int solve(const Board &board);
+    int solve(const Board &board) const;
 
 private:
     bool costLimitedDFS(const Board &board, int costLimit) const;

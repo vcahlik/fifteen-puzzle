@@ -31,15 +31,22 @@ private:
 
         int cost(const std::vector<int> &pebblePositions) const;
 
+        bool hasCost(const std::vector<int> &pebblePositions) const;
+
         void saveCost(const std::vector<int> &pebblePositions, int cost);
 
-        int size() const;
+        void clear();
 
     private:
         int index(const std::vector<int> &pebblePositions) const;
 
+        void calculateSize();
+
         void calculateIndexCoefficients();
 
+        static const std::byte UNSET = static_cast<std::byte>(255);
+
+        int size;
         std::byte *data;
         std::vector<int> indexCoefficients;
         const int pebblesCnt;

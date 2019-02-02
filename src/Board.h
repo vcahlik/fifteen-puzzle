@@ -35,7 +35,7 @@ public:
 
     virtual std::array<PebbleIndex, 16> getPebbleIndexes() const;
 
-    std::vector<Board::Direction> getValidDirections() const;
+    const std::vector<Board::Direction> &getValidDirections() const;
 
     static Direction getOppositeDirection(Direction direction);
 
@@ -47,7 +47,7 @@ public:
 
     size_t hash() const;
 
-    void print();
+    void print() const;
 
 protected:
     virtual void setPebblePosition(int pebble, int position);

@@ -5,7 +5,7 @@
 #include <iomanip>
 #include "Utils.h"
 
-void debugPrint(const std::string &msg) {
+void infoMessage(const std::string &msg) {
     timeval curTime;
     gettimeofday(&curTime, nullptr);
     int milli = static_cast<int>(curTime.tv_usec / 1000);

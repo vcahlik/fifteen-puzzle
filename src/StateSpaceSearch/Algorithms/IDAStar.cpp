@@ -6,7 +6,7 @@
 IDAStar::IDAStar(const Heuristic &heuristic)
     :   heuristic(heuristic) {}
 
-int IDAStar::solve(const Board &board) {
+int IDAStar::solve(const Board &board) const {
     int costLimit = heuristic.estimateCost(board);
 
     while (true) {

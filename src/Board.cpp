@@ -1,21 +1,15 @@
 #include <iostream>
 #include <iomanip>
+#include <map>
 #include "Board.h"
-
-constexpr std::array<int, 16> Board::solvedPebbles;
-constexpr std::array<int, 16> Board::solvedPebblePositions;
 
 PebbleIndex::PebbleIndex(int row, int col)
     :   row(row),
-        col(col) {
-
-}
+        col(col) {}
 
 Board::Board()
         :   pebbles(solvedPebbles),
-            pebblePositions(solvedPebblePositions) {
-
-}
+            pebblePositions(solvedPebblePositions) {}
 
 Board::Board(std::array<int, 16> pebbles)
     :   pebbles(pebbles) {
@@ -36,17 +30,28 @@ std::array<PebbleIndex, 16> Board::getPebbleIndexes() const {
     return pebbleIndexes;
 }
 
-std::vector<Board::Direction> Board::getValidDirections() const {
-    auto directions = std::vector<Board::Direction>();
-    directions.reserve(4);
-    PebbleIndex indexOfBlank = positionToIndex(pebblePositions[0]);
+const std::vector<Board::Direction> &Board::getValidDirections() const {
+    static std::map<int, std::vector<Board::Direction>> precomputedResults;
+    static bool initialized = false;
 
-    if (indexOfBlank.row > 0) {directions.push_back(Direction::Up);}
-    if (indexOfBlank.row < 3) {directions.push_back(Direction::Down);}
-    if (indexOfBlank.col > 0) {directions.push_back(Direction::Left);}
-    if (indexOfBlank.col < 3) {directions.push_back(Direction::Right);}
+    if (!initialized) {
+        for (int i = 0; i < 16; ++i) {
+            auto directions = std::vector<Board::Direction>();
+            directions.reserve(4);
+            PebbleIndex indexOfBlank = positionToIndex(i);
 
-    return directions;
+            if (indexOfBlank.row > 0) {directions.push_back(Direction::Up);}
+            if (indexOfBlank.row < 3) {directions.push_back(Direction::Down);}
+            if (indexOfBlank.col > 0) {directions.push_back(Direction::Left);}
+            if (indexOfBlank.col < 3) {directions.push_back(Direction::Right);}
+
+            precomputedResults[i] = directions;
+        }
+
+        initialized = true;
+    }
+
+    return precomputedResults[pebblePositions[0]];
 }
 
 Board::Direction Board::getOppositeDirection(Direction direction) {
@@ -110,12 +115,12 @@ void Board::shuffle(int movesCnt) {
 size_t Board::hash() const {
     size_t res = 0;
     for (int i = 0; i < pebbles.size(); ++i) {
-        res += pebbles[i] << (2 * i);
+        res ^= static_cast<unsigned int>(pebbles[i]) << (2 * i);
     }
     return res;
 }
 
-void Board::print() {
+void Board::print() const {
     for (int row = 0; row < 4; ++row) {
         for (int col = 0; col < 4; ++col) {
             std::cout << std::setw(3) << pebbles[4 * row + col];

@@ -18,8 +18,6 @@ public:
 
     int getCost() const;
 
-    void setCost(int cost);
-
     const Board &getBoard() const;
 
     Board::Direction getLastMoveDirection() const;

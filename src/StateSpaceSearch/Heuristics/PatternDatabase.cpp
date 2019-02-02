@@ -27,18 +27,19 @@ std::string PatternDatabase::name() const {
 }
 
 void PatternDatabase::preCalculate() {
-    debugPrint("Database precalculation started.");
+    infoMessage("Database precalculation started.");
 
     for (auto &subproblem : subproblems) {
         subproblem.preCalculate();
     }
 
-    debugPrint("Database precalculation complete.");
+    infoMessage("Database precalculation complete.");
 }
 
 PatternDatabase::Database::Database(int pebblesCnt)
     :   pebblesCnt(pebblesCnt) {
-    data = new std::byte[size()];
+    calculateSize();
+    data = new std::byte[size];
     calculateIndexCoefficients();
 }
 
@@ -50,16 +51,18 @@ int PatternDatabase::Database::cost(const std::vector<int> &pebblePositions) con
     return static_cast<int>(data[index(pebblePositions)]);
 }
 
+bool PatternDatabase::Database::hasCost(const std::vector<int> &pebblePositions) const {
+    return data[index(pebblePositions)] != UNSET;
+}
+
 void PatternDatabase::Database::saveCost(const std::vector<int> &pebblePositions, int cost) {
     data[index(pebblePositions)] = static_cast<std::byte>(cost);
 }
 
-int PatternDatabase::Database::size() const {
-    int size = 1;
-    for (int placementsCnt = 17 - pebblesCnt; placementsCnt < 17; ++placementsCnt) {
-        size = size * placementsCnt;
+void PatternDatabase::Database::clear() {
+    for (int i = 0; i < size; ++i) {
+        data[i] = UNSET;
     }
-    return size;
 }
 
 int PatternDatabase::Database::index(const std::vector<int> &pebblePositions) const {
@@ -79,20 +82,25 @@ int PatternDatabase::Database::index(const std::vector<int> &pebblePositions) co
     return index;
 }
 
+void PatternDatabase::Database::calculateSize() {
+    size = 1;
+    for (int placementsCnt = 17 - pebblesCnt; placementsCnt < 17; ++placementsCnt) {
+        size = size * placementsCnt;
+    }
+}
+
 void PatternDatabase::Database::calculateIndexCoefficients() {
-    int c = 1;
+    int coefficient = 1;
     for (int i = 17 - pebblesCnt; i < 17; ++i) {
-        indexCoefficients.push_back(c);
-        c = c * i;
+        indexCoefficients.push_back(coefficient);
+        coefficient = coefficient * i;
     }
     std::reverse(indexCoefficients.begin(), indexCoefficients.end());
 }
 
 PatternDatabase::Subproblem::Subproblem(std::vector<int> pebbles)
     :   pebbles(pebbles),
-        database(static_cast<int>(pebbles.size() + 1)) {
-
-}
+        database(static_cast<int>(pebbles.size() + 1)) {}
 
 int PatternDatabase::Subproblem::estimateCost(const Board &board) const {
     return database.cost(board.getPebblePositionsWithBlank(pebbles));
@@ -107,9 +115,9 @@ void PatternDatabase::Subproblem::preCalculate() {
         return *lhs == *rhs;
     };
 
+    database.clear();
     auto openQueue = std::queue<std::shared_ptr<PreCalculationNode>>();
     auto openSet = std::unordered_set<std::shared_ptr<PreCalculationNode>, decltype(hash), decltype(equal)>(1000, hash, equal);
-    auto closed = std::unordered_set<std::shared_ptr<PreCalculationNode>, decltype(hash), decltype(equal)>(1000, hash, equal);
 
     auto initNode = std::make_shared<PreCalculationNode>(PartialBoard(pebbles));
     openQueue.push(initNode);
@@ -125,11 +133,8 @@ void PatternDatabase::Subproblem::preCalculate() {
         openSet.erase(popped);
 
         while (!expansionQueue.empty()) {
-            auto node = expansionQueue.front();
+            auto &node = expansionQueue.front();
             database.saveCost(node->getBoard().getPebblePositionsWithBlank(pebbles), node->getCost());
-            expansionQueue.pop();
-            expansionSet.erase(node);
-            closed.insert(node);
 
             for (Board::Direction direction : node->getBoard().getValidDirections()) {
                 if (node->getLastMoveDirection() == Board::getOppositeDirection(direction)) {
@@ -138,10 +143,10 @@ void PatternDatabase::Subproblem::preCalculate() {
 
                 auto childBoard = PartialBoard(node->getBoard());
                 int movedPebble = childBoard.moveBlank(direction);
-                auto child = std::make_shared<PreCalculationNode>(childBoard, direction, node->getCost());
+                auto child = std::make_shared<PreCalculationNode>(std::move(childBoard), direction, node->getCost());
                 if ((expansionSet.count(child) == 0)
                         && (openSet.count(child) == 0)
-                        && (closed.count(child) == 0)) {
+                        && (!database.hasCost(child->getBoard().getPebblePositionsWithBlank(pebbles)))) {
                     if (std::find(pebbles.begin(), pebbles.end(), movedPebble) != pebbles.end()) {
                         child->setCost(child->getCost() + 1);
                         openQueue.push(child);
@@ -152,10 +157,13 @@ void PatternDatabase::Subproblem::preCalculate() {
                     }
                 }
             }
+
+            expansionQueue.pop();
+            expansionSet.erase(node);
         }
     }
 
-    debugPrint(this->name() + " done.");
+    infoMessage(this->name() + " done.");
 }
 
 std::string PatternDatabase::Subproblem::name() const {
@@ -266,6 +274,13 @@ std::set<std::vector<int>> PatternDatabase::getPatternsDefinition(int maxLen) {
             return {{1, 2, 5, 6, 9, 10},
                     {3, 4, 7, 8, 11, 12},
                     {13, 14, 15}};
+        case 7:
+            return {{1, 2, 3, 4, 5, 6, 7},
+                    {9, 10, 11, 12, 13, 14, 15},
+                    {8}};
+        case 8:
+            return {{1, 2, 3, 4, 5, 6, 7, 8},
+                    {9, 10, 11, 12, 13, 14, 15}};
         default:
             throw std::invalid_argument("Not implemented yet.");
     }

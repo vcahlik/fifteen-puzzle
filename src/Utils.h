@@ -4,6 +4,6 @@
 
 #include <string>
 
-void debugPrint(const std::string &msg);
+void infoMessage(const std::string &msg);
 
 #endif //FIFTEEN_PUZZLE_SOLVER_UTILS_H
