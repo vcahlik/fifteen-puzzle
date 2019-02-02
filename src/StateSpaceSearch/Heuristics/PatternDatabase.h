@@ -18,6 +18,8 @@ public:
 
     void preCalculate();
 
+    void loadDB();
+
 private:
     class Database {
     public:
@@ -37,8 +39,12 @@ private:
 
         void clear();
 
+        size_t getSize() const;
+
+        std::byte *getData();
+
     private:
-        int index(const std::vector<int> &pebblePositions) const;
+        size_t index(const std::vector<int> &pebblePositions) const;
 
         void calculateSize();
 
@@ -46,9 +52,9 @@ private:
 
         static const std::byte UNSET = static_cast<std::byte>(255);
 
-        int size;
+        size_t size;
         std::byte *data;
-        std::vector<int> indexCoefficients;
+        std::vector<size_t> indexCoefficients;
         const int pebblesCnt;
     };
 
@@ -61,6 +67,10 @@ private:
         void preCalculate();
 
         std::string name() const;
+
+        void loadDB();
+
+        void saveDB();
 
     private:
         class PartialBoard : public Board {
@@ -98,6 +108,8 @@ private:
             Board::Direction lastMoveDirection;
             int cost;
         };
+
+        std::string databaseFileName() const;
 
         const std::vector<int> pebbles;
         Database database;

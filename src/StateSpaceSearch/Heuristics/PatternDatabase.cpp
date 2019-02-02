@@ -6,6 +6,7 @@
 #include <sstream>
 #include <unordered_set>
 #include "PatternDatabase.h"
+#include <fstream>
 
 PatternDatabase::PatternDatabase(int maxPatternLength) {
     auto patternsDefinition = getPatternsDefinition(maxPatternLength);
@@ -36,6 +37,16 @@ void PatternDatabase::preCalculate() {
     infoMessage("Database precalculation complete.");
 }
 
+void PatternDatabase::loadDB() {
+    infoMessage("Loading database from disk.");
+
+    for (auto &subproblem : subproblems) {
+        subproblem.loadDB();
+    }
+
+    infoMessage("Database successfully loaded.");
+}
+
 PatternDatabase::Database::Database(int pebblesCnt)
     :   pebblesCnt(pebblesCnt) {
     calculateSize();
@@ -60,13 +71,21 @@ void PatternDatabase::Database::saveCost(const std::vector<int> &pebblePositions
 }
 
 void PatternDatabase::Database::clear() {
-    for (int i = 0; i < size; ++i) {
+    for (size_t i = 0; i < size; ++i) {
         data[i] = UNSET;
     }
 }
 
-int PatternDatabase::Database::index(const std::vector<int> &pebblePositions) const {
-    int index = 0;
+size_t PatternDatabase::Database::getSize() const {
+    return size;
+}
+
+std::byte *PatternDatabase::Database::getData() {
+    return data;
+}
+
+size_t PatternDatabase::Database::index(const std::vector<int> &pebblePositions) const {
+    size_t index = 0;
     std::vector<int> readjustments(pebblesCnt, 0);
 
     for (int i = 0; i < pebblesCnt; ++i) {
@@ -90,7 +109,7 @@ void PatternDatabase::Database::calculateSize() {
 }
 
 void PatternDatabase::Database::calculateIndexCoefficients() {
-    int coefficient = 1;
+    size_t coefficient = 1;
     for (int i = 17 - pebblesCnt; i < 17; ++i) {
         indexCoefficients.push_back(coefficient);
         coefficient = coefficient * i;
@@ -163,25 +182,38 @@ void PatternDatabase::Subproblem::preCalculate() {
         }
     }
 
-    infoMessage(this->name() + " done.");
+    saveDB();
 }
 
 std::string PatternDatabase::Subproblem::name() const {
     std::ostringstream oss;
-    oss << "Subproblem {";
+    oss << "Subproblem";
 
-    auto first = true;
     for (auto pebble : pebbles) {
-        if (first) {
-            oss << pebble;
-            first = false;
-        } else {
-            oss << ", " << pebble;
-        }
+        oss << "-" << pebble;
     }
 
-    oss << "}";
     return oss.str();
+}
+
+void PatternDatabase::Subproblem::loadDB() {
+    auto file = std::ifstream(databaseFileName(), std::ios::binary);
+    file.read(reinterpret_cast<char *>(database.getData()), database.getSize());
+    file.close();
+
+    infoMessage(this->name() + " done.");
+}
+
+void PatternDatabase::Subproblem::saveDB() {
+    auto file = std::ofstream(databaseFileName(), std::ios::binary | std::fstream::trunc);
+    file.write(reinterpret_cast<char *>(database.getData()), database.getSize());
+    file.close();
+
+    infoMessage(this->name() + " saved to disk.");
+}
+
+std::string PatternDatabase::Subproblem::databaseFileName() const {
+    return "../data/pattern-databases/" + name() + ".bin";
 }
 
 PatternDatabase::Subproblem::PartialBoard::PartialBoard(const std::vector<int> &validPebbles) {

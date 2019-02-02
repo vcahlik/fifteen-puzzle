@@ -115,7 +115,7 @@ void Board::shuffle(int movesCnt) {
 size_t Board::hash() const {
     size_t res = 0;
     for (int i = 0; i < pebbles.size(); ++i) {
-        res ^= static_cast<unsigned int>(pebbles[i]) << (2 * i);
+        res ^= static_cast<size_t>(pebbles[i]) << (4 * i);
     }
     return res;
 }
