@@ -88,17 +88,29 @@ int Board::moveBlank(const Board::Direction direction) {
 }
 
 void Board::shuffle(int movesCnt) {
+    Direction lastMoveDirection = Direction::None;
     for (int i = 0; i < movesCnt; ++i) {
         auto directions = getValidDirections();
-        Direction direction = directions[rand() % directions.size()];
+        int randomIndex = static_cast<int>(rand() % directions.size());
+
+        Direction direction = directions[randomIndex];
+        if (direction == lastMoveDirection) {
+            if (randomIndex > 0) {
+                direction = directions[0];
+            } else {
+                direction = directions[1];
+            }
+        }
+
         moveBlank(direction);
+        lastMoveDirection = direction;
     }
 }
 
 size_t Board::hash() const {
     size_t res = 0;
     for (int i = 0; i < pebbles.size(); ++i) {
-        res += pebbles[i] << i;
+        res += pebbles[i] << (2 * i);
     }
     return res;
 }

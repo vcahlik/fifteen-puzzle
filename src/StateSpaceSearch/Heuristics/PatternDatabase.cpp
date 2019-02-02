@@ -262,6 +262,10 @@ std::set<std::vector<int>> PatternDatabase::getPatternsDefinition(int maxLen) {
             return {{1, 2, 3, 5, 6},
                     {4, 7, 8, 11, 12},
                     {9, 10, 13, 14, 15}};
+        case 6:
+            return {{1, 2, 5, 6, 9, 10},
+                    {3, 4, 7, 8, 11, 12},
+                    {13, 14, 15}};
         default:
             throw std::invalid_argument("Not implemented yet.");
     }
