@@ -25,6 +25,10 @@ void randomSolveBenchmark(std::list<Heuristic *> heuristics, int shuffleCnt, int
             }
             lastCost = cost;
         }
+
+        if ((i + 1) % 100 == 0) {
+            infoMessage("Random solve benchmark: " + std::to_string(i + 1) + " boards solved.");
+        }
     }
 }
 

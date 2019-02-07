@@ -92,8 +92,9 @@ int Board::moveBlank(const Board::Direction direction) {
     return replacedPebble;
 }
 
-void Board::shuffle(int movesCnt) {
+void Board::shuffle(int minMovesCnt) {
     Direction lastMoveDirection = Direction::None;
+    int movesCnt = minMovesCnt + rand() % 2;
     for (int i = 0; i < movesCnt; ++i) {
         auto directions = getValidDirections();
         int randomIndex = static_cast<int>(rand() % directions.size());
@@ -118,6 +119,14 @@ size_t Board::hash() const {
         res ^= static_cast<size_t>(pebbles[i]) << (4 * i);
     }
     return res;
+}
+
+std::ostream& operator<<(std::ostream& os, const Board& board) {
+    os << board.pebbles[0];
+    for (int i = 1; i < board.pebbles.size(); ++i) {
+        os << "," << board.pebbles[i];
+    }
+    return os;
 }
 
 void Board::print() const {

@@ -14,7 +14,7 @@ int IDAStar::solve(const Board &board) const {
             return costLimit;
         }
 
-        costLimit += 2;
+        ++costLimit;
     }
 }
 

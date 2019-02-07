@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <StateSpaceSearch/Node.h>
 #include <queue>
-#include <iostream>
 #include <Utils.h>
 #include <sstream>
 #include <unordered_set>

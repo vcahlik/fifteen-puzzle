@@ -43,9 +43,11 @@ public:
 
     int moveBlank(Direction direction);
 
-    void shuffle(int movesCnt);
+    void shuffle(int minMovesCnt);
 
     size_t hash() const;
+
+    friend std::ostream& operator<<(std::ostream& os, const Board& board);
 
     void print() const;
 
