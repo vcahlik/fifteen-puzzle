@@ -1,0 +1,14 @@
+name: fifteen-puzzle-neural
+channels:
+  - pytorch
+dependencies:
+  - numpy
+  - scipy
+  - pytorch-cpu
+  - torchvision-cpu
+  - pytorch
+  - scikit-learn
+  - pandas
+  - matplotlib
+  - jupyter
+  - cython
