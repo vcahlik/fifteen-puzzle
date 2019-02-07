@@ -10,6 +10,7 @@ set(SOURCES
 
 set(HEADERS
         ${HEADERS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/Config.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Board.h
         ${CMAKE_CURRENT_SOURCE_DIR}/Utils.h
         PARENT_SCOPE

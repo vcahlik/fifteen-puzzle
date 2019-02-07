@@ -4,6 +4,7 @@
 #include <fstream>
 #include "Dataset.h"
 #include <csignal>
+#include <Config.h>
 
 static bool interrupted = false;
 
@@ -14,7 +15,7 @@ void signalHandler(int signal)
 
 void generateSolutionsDataset(Heuristic *heuristic, int shuffleCnt) {
     IDAStar search(*heuristic);
-    auto file = std::ofstream("../data/datasets/solutions-" + currentTimeStr() + ".csv", std::ios::binary | std::fstream::trunc);
+    auto file = std::ofstream(Config::Paths::DATA_DIR + "/datasets/solutions-" + currentTimeStr() + ".csv", std::ios::binary | std::fstream::trunc);
 
     signal(SIGINT, &signalHandler);
     signal(SIGTERM, &signalHandler);

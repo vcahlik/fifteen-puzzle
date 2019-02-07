@@ -6,6 +6,7 @@
 #include <unordered_set>
 #include "PatternDatabase.h"
 #include <fstream>
+#include <Config.h>
 
 PatternDatabase::PatternDatabase(int maxPatternLength) {
     auto patternsDefinition = getPatternsDefinition(maxPatternLength);
@@ -212,7 +213,7 @@ void PatternDatabase::Subproblem::saveDB() {
 }
 
 std::string PatternDatabase::Subproblem::databaseFileName() const {
-    return "../data/pattern-databases/" + name() + ".bin";
+    return Config::Paths::DATA_DIR + "/pattern-databases/" + name() + ".bin";
 }
 
 PatternDatabase::Subproblem::PartialBoard::PartialBoard(const std::vector<int> &validPebbles) {
