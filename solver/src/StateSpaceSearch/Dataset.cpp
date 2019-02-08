@@ -15,7 +15,7 @@ void signalHandler(int signal)
 
 void generateSolutionsDataset(Heuristic *heuristic, int shuffleCnt) {
     IDAStar search(*heuristic);
-    auto file = std::ofstream(Config::Paths::DATA_DIR + "/datasets/solutions-" + currentTimeStr() + ".csv", std::ios::binary | std::fstream::trunc);
+    auto file = std::ofstream(Config::Paths::DATASETS_RAW_DIR + "/15-costs/solutions-" + currentTimeStr() + ".csv", std::ios::binary | std::fstream::trunc);
 
     signal(SIGINT, &signalHandler);
     signal(SIGTERM, &signalHandler);
