@@ -92,9 +92,14 @@ int Board::moveBlank(const Board::Direction direction) {
     return replacedPebble;
 }
 
-void Board::shuffle(int minMovesCnt) {
+void Board::shuffle(int minMovesCnt, bool randomize) {
     Direction lastMoveDirection = Direction::None;
-    int movesCnt = minMovesCnt + rand() % 2;
+
+    int movesCnt = minMovesCnt;
+    if (randomize) {
+        movesCnt += rand() % 2;
+    }
+
     for (int i = 0; i < movesCnt; ++i) {
         auto directions = getValidDirections();
         int randomIndex = static_cast<int>(rand() % directions.size());

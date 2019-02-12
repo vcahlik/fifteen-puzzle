@@ -5,6 +5,7 @@
 #include "Dataset.h"
 #include <csignal>
 #include <Config.h>
+#include <random>
 
 static bool interrupted = false;
 
@@ -13,16 +14,24 @@ void signalHandler(int signal)
     interrupted = true;
 }
 
-void generateSolutionsDataset(Heuristic *heuristic, int shuffleCnt) {
+void generateSolutionsDataset(Heuristic *heuristic, int minShuffleCnt, int maxShuffleCount) {
     IDAStar search(*heuristic);
     auto file = std::ofstream(Config::Paths::DATASETS_RAW_DIR + "/15-costs/solutions-" + currentTimeStr() + ".csv", std::ios::binary | std::fstream::trunc);
+    if (!file) {
+        throw std::runtime_error("Can't open output file");
+    }
+
+    std::random_device rd;
+    std::mt19937 rng(rd());
+    std::uniform_int_distribution<int> random_uniform(minShuffleCnt, maxShuffleCount);
 
     signal(SIGINT, &signalHandler);
     signal(SIGTERM, &signalHandler);
 
     for (int i = 0; ; ++i) {
         Board board;
-        board.shuffle(shuffleCnt);
+        auto shufflesCnt = random_uniform(rng);
+        board.shuffle(shufflesCnt);
 
         auto startTime = std::chrono::high_resolution_clock::now();
         int cost = search.solve(board);
@@ -31,7 +40,7 @@ void generateSolutionsDataset(Heuristic *heuristic, int shuffleCnt) {
 
         file << board << "," << cost << std::endl;
 
-        infoMessage("Generated solution: cost " + std::to_string(cost) + ", duration: " +
+        infoMessage("Generated solution: shuffles: " + std::to_string(shufflesCnt) + ", cost " + std::to_string(cost) + ", duration: " +
                     std::to_string(duration / 1000.0));
 
         if ((i + 1) % 100 == 0) {

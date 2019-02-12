@@ -43,7 +43,7 @@ public:
 
     int moveBlank(Direction direction);
 
-    void shuffle(int minMovesCnt);
+    void shuffle(int minMovesCnt, bool randomize=false);
 
     size_t hash() const;
 
