@@ -2,6 +2,7 @@ name: fifteen-puzzle
 channels:
   - pytorch
 dependencies:
+  - python=3.6
   - numpy
   - scipy
   - tensorflow
