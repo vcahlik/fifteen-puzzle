@@ -1,9 +1,11 @@
-name: fifteen-puzzle-neural
+name: fifteen-puzzle
 channels:
   - pytorch
 dependencies:
   - numpy
   - scipy
+  - tensorflow
+  - keras
   - pytorch-cpu
   - torchvision-cpu
   - pytorch
