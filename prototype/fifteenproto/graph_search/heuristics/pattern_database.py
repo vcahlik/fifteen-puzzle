@@ -5,16 +5,18 @@ import custom_queue
 import copy
 from utils import debug_print
 from multiprocessing import Pool
+from .heuristic import Heuristic
 import os
 
 
 PATTERN_DATABASE_FOLDER = "../data/pattern_databases/"
 
 
-class Subproblem:
+class Subproblem(Heuristic):
     ZERO_COST = 255
 
-    def __init__(self, pebbles):
+    def __init__(self, pebbles, custom_name=None):
+        super().__init__(custom_name)
         self.pebbles = pebbles
         self.db = bytearray(self._db_size())
         self._db_coefficients = self._calculate_db_coefficients()
@@ -84,12 +86,12 @@ class Subproblem:
 
             while len(expansion_open_nodes) > 0:
                 node = expansion_open_nodes.pop_left()
-                self.save_cost(node.board.pebble_positions_subset(self.pebbles), node.cost)
+                self.save_cost(node.board.pebble_positions_subset(self.pebbles), node.estimate_cost)
 
                 for direction in node.board.valid_directions():
                     child_board = copy.deepcopy(node.board)
                     moved_pebble = child_board.move_blank(direction)
-                    child_node = self.PreCalculationNode(child_board, node.cost)
+                    child_node = self.PreCalculationNode(child_board, node.estimate_cost)
                     if (child_node not in expansion_open_nodes) \
                             and (child_node not in open_nodes) \
                             and (not self.has_cost(child_node.board.pebble_positions_subset(self.pebbles))):

@@ -1,13 +1,14 @@
-from neural.keras_mlp import KerasMLP
+import numpy as np
+from .heuristic import Heuristic
 
 
-class NeuralNetworkHeuristic:
-    def __init__(self, **kwargs):
-        self.net = KerasMLP(**kwargs)
+class NeuralNetworkHeuristic(Heuristic):
+    def __init__(self, model, custom_name=None):
+        super().__init__(custom_name)
+        self.model = model
 
-    def train(self, **kwargs):
-        self.net.train(**kwargs)
-
-    def cost(self, board):
-        # TODO
-        return None
+    def estimate_cost(self, board):
+        x = np.array(board.config)
+        x_encoded = np.eye(16)[x].ravel()
+        y = self.model.predict(x_encoded.reshape(1, -1)).item()
+        return y

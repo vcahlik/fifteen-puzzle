@@ -14,7 +14,7 @@ def cost_limited_depth_first_search(init_node, heuristic, cost_limit, goal_test=
         if goal_test(node.board):
             return node.path(), n_explored
         for child in node.children(shuffle=las_vegas_randomization):
-            estimated_cost = child.cost + heuristic.cost(child.board)
+            estimated_cost = child.cost + heuristic.estimate_cost(child.board)
             if estimated_cost <= cost_limit:
                 open_nodes.push_right(child)
 
@@ -22,7 +22,7 @@ def cost_limited_depth_first_search(init_node, heuristic, cost_limit, goal_test=
 
 
 def iterative_deepening_a_star_search(init_node, heuristic, goal_test=Board.is_solved, las_vegas_randomization=False):
-    cost_limit = heuristic.cost(init_node.board)
+    cost_limit = heuristic.estimate_cost(init_node.board)
 
     while True:
         try:

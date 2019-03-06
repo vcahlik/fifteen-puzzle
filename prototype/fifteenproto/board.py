@@ -106,8 +106,13 @@ class Board:
     #     TODO check using permutation sign and distance of blank from goal
         # return True
 
-    def shuffle(self, n_moves=1000):
+    def shuffle(self, n_moves_min=1000, randomize: bool = False):
         last_direction = None
+
+        n_moves = n_moves_min
+        if randomize:
+            n_moves = n_moves + random.randint(0, 1)
+
         for _ in range(n_moves):
             directions = self.valid_directions()
             direction = random.choice(directions)

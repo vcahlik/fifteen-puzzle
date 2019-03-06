@@ -5,20 +5,15 @@ import numpy as np
 class KerasMLP:
     def __init__(self, one_hot_encoder, **kwargs):
         self.model = self.create_model(**kwargs)
-        self.one_hot_encoder = one_hot_encoder
-
-    def train(self, **kwargs):
-        history = self.model.fit(**kwargs)
-        return history.history['val_loss'][-1]
 
     def cost(self, board):
         x = np.array(board.pebble_indexes()).reshape(1, -1)
+        np.eye(16)[x].ravel()
         x = self.one_hot_encoder.transform(x).toarray()
         return int(self.model.predict(x).item())
 
     @staticmethod
     def create_model(
-            self,
             layer_sizes,
             learning_rate=0.001,
             dropout_ratio=0.2,
