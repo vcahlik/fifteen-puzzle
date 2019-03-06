@@ -5,11 +5,11 @@ dependencies:
   - python=3.6
   - numpy
   - scipy
-  - tensorflow
+  - tensorflow-gpu
   - keras
-  - pytorch-cpu
-  - torchvision-cpu
   - pytorch
+  - torchvision
+  - cudatoolkit=9.0
   - scikit-learn
   - pandas
   - matplotlib
