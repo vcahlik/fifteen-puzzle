@@ -6,11 +6,11 @@ import copy
 from utils import debug_print
 from multiprocessing import Pool
 from .heuristic import Heuristic
-import fifteenproto.constants
+import prototype.constants
 import os
 
 
-PATTERN_DATABASE_FOLDER = os.path.join(fifteenproto.constants.PROJECT_ROOT, "data/pattern-databases/prototype")
+PATTERN_DATABASE_FOLDER = os.path.join(prototype.constants.PROJECT_ROOT, "data/pattern-databases/prototype")
 
 
 class Subproblem(Heuristic):
