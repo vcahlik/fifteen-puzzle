@@ -3,6 +3,7 @@ from graph_search.node import ForwardSearchNode
 from graph_search.algorithms.iterative_deepening_a_star_search import iterative_deepening_a_star_search
 from graph_search.heuristics.manhattan_distance import ManhattanDistanceHeuristic
 from graph_search.heuristics.neural_network import NeuralNetworkHeuristic
+from graph_search.heuristics.pattern_database import PatternDatabaseHeuristic
 from utils import debug_print
 import time
 import numpy as np
@@ -50,12 +51,15 @@ def experiment(n_shuffles, heuristics, n_runs=-1):
 
 heuristics = list()
 
-heuristics.append(ManhattanDistanceHeuristic())
+pdb = PatternDatabaseHeuristic(4)
+# pdb.pre_calculate_db()
+pdb.load_db()
+heuristics.append(pdb)
 
-model = keras.models.load_model('../../../../data/keras-1024-1024-512-128-64.h5')
-heuristics.append(NeuralNetworkHeuristic(model, custom_name="Neural"))
+# model = keras.models.load_model('../../../../data/keras-1024-1024-512-128-64.h5')
+# heuristics.append(NeuralNetworkHeuristic(model, custom_name="Neural"))
 
-model = keras.models.load_model('../../../../data/keras-1024-1024-512-128-64.h5')
-heuristics.append(NeuralNetworkHeuristic(model, additive_constant=-2, custom_name="Neural, shift -2"))
+# model = keras.models.load_model('../../../../data/keras-1024-1024-512-128-64.h5')
+# heuristics.append(NeuralNetworkHeuristic(model, additive_constant=-2, custom_name="Neural, shift -2"))
 
-experiment(70, heuristics)
+experiment(80, heuristics)

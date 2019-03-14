@@ -3,14 +3,14 @@ import numpy as np
 
 
 class KerasMLP:
-    def __init__(self, one_hot_encoder, **kwargs):
+    def __init__(self, **kwargs):
         self.model = self.create_model(**kwargs)
 
     def cost(self, board):
-        x = np.array(board.pebble_indexes()).reshape(1, -1)
-        np.eye(16)[x].ravel()
-        x = self.one_hot_encoder.transform(x).toarray()
-        return int(self.model.predict(x).item())
+        x = np.array(board.config)
+        x_encoded = np.eye(16)[x].ravel()
+        y = self.model.predict(x_encoded.reshape(1, -1)).item()
+        return y
 
     @staticmethod
     def create_model(

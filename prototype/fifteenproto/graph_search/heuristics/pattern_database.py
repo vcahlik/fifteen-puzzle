@@ -6,10 +6,11 @@ import copy
 from utils import debug_print
 from multiprocessing import Pool
 from .heuristic import Heuristic
+import fifteenproto.constants
 import os
 
 
-PATTERN_DATABASE_FOLDER = "../data/pattern_databases/"
+PATTERN_DATABASE_FOLDER = os.path.join(fifteenproto.constants.PROJECT_ROOT, "data/pattern-databases/prototype")
 
 
 class Subproblem(Heuristic):
@@ -73,7 +74,7 @@ class Subproblem(Heuristic):
         self.db[self._db_index(pebble_positions)] = cost if cost > 0 else self.ZERO_COST
 
     def db_file_path(self):
-        return f"{self.db_folder_path}subproblem_{self.pebbles}.pkl"
+        return os.path.join(self.db_folder_path, f"subproblem_{self.pebbles}.pkl")
 
     def pre_calculate_db(self):
         init_node = self.PreCalculationNode(PartialBoard(self.pebbles))
@@ -86,12 +87,12 @@ class Subproblem(Heuristic):
 
             while len(expansion_open_nodes) > 0:
                 node = expansion_open_nodes.pop_left()
-                self.save_cost(node.board.pebble_positions_subset(self.pebbles), node.estimate_cost)
+                self.save_cost(node.board.pebble_positions_subset(self.pebbles), node.cost)
 
                 for direction in node.board.valid_directions():
                     child_board = copy.deepcopy(node.board)
                     moved_pebble = child_board.move_blank(direction)
-                    child_node = self.PreCalculationNode(child_board, node.estimate_cost)
+                    child_node = self.PreCalculationNode(child_board, node.cost)
                     if (child_node not in expansion_open_nodes) \
                             and (child_node not in open_nodes) \
                             and (not self.has_cost(child_node.board.pebble_positions_subset(self.pebbles))):
@@ -152,12 +153,13 @@ class PatternDatabaseHeuristic:
     def __init__(self, pattern_size=2):
         self.subproblems = [Subproblem(pebbles) for pebbles in _pattern_definitions[pattern_size]]
 
-    def cost(self, board):
+    def estimate_cost(self, board):
         return sum([subproblem.cost(board.pebble_positions_subset(subproblem.pebbles)) for subproblem in self.subproblems])
 
     def _default_folder(self):
         subproblem_lengths = [len(subproblem.pebbles) for subproblem in self.subproblems]
-        return f"{PATTERN_DATABASE_FOLDER}patterns-maxlen-{max(subproblem_lengths)}/"
+        subfolder_name = f"patterns-maxlen-{max(subproblem_lengths)}"
+        return os.path.join(PATTERN_DATABASE_FOLDER, subfolder_name)
 
     def pre_calculate_db(self, n_processes=4, folder_path=None):
         if folder_path is None:

@@ -16,7 +16,7 @@ def a_star_search(init_node, heuristic, goal_test=Board.is_solved, las_vegas_ran
             if child in closed_nodes:
                 continue
             curr_estimated_cost = open_nodes.get_priority(child)
-            child_estimated_cost = child.cost + heuristic.estimate_cost(child.board)
+            child_estimated_cost = child.estimate_cost + heuristic.estimate_cost(child.board)
             if curr_estimated_cost is None or curr_estimated_cost > child_estimated_cost:
                 open_nodes.push(child, child_estimated_cost)
                 closed_nodes.add(node)
