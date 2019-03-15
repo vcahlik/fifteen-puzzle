@@ -4,10 +4,9 @@ import time
 
 
 class SolvingExperiment:
-    def __init__(self, algorithms: list, heuristics: list, metrics: list, n_shuffles: int, n_runs: int = -1):
+    def __init__(self, algorithms: list, heuristics: list, n_shuffles: int, n_runs: int = -1):
         self.algorithms = algorithms
         self.heuristics = heuristics
-        self.metrics = metrics
         self.n_shuffles = n_shuffles
         self.n_runs = n_runs
 

@@ -7,20 +7,20 @@ import random
 
 
 class Direction(Enum):
-    up = -4
-    down = 4
-    left = -1
-    right = 1
+    UP = -4
+    DOWN = 4
+    LEFT = -1
+    RIGHT = 1
 
     def opposite(self):
-        if self == Direction.up:
-            return Direction.down
-        elif self == Direction.down:
-            return Direction.up
-        elif self == Direction.left:
-            return Direction.right
+        if self == Direction.UP:
+            return Direction.DOWN
+        elif self == Direction.DOWN:
+            return Direction.UP
+        elif self == Direction.LEFT:
+            return Direction.RIGHT
         else:
-            return Direction.left
+            return Direction.LEFT
 
 
 class Board:
@@ -58,13 +58,13 @@ class Board:
         row_index, col_index = self.position_to_index(self.blank_position)
 
         if row_index > 0:
-            directions.append(Direction.up)
+            directions.append(Direction.UP)
         if row_index < 3:
-            directions.append(Direction.down)
+            directions.append(Direction.DOWN)
         if col_index > 0:
-            directions.append(Direction.left)
+            directions.append(Direction.LEFT)
         if col_index < 3:
-            directions.append(Direction.right)
+            directions.append(Direction.RIGHT)
 
         return directions
 
