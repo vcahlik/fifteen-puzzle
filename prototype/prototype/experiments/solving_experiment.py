@@ -1,6 +1,7 @@
 from prototype.board import Board
 from prototype.utils import debug_print
 import time
+from prototype.graph_search.node import ForwardSearchNode
 
 
 class SolvingExperiment:
@@ -15,6 +16,7 @@ class SolvingExperiment:
 
     def _solve(self, board, algorithm, heuristic):
         start_time = time.clock()
+        algorithm.run(ForwardSearchNode(board))
         path, expanded_nodes = iterative_deepening_a_star_search(ForwardSearchNode(board), heuristic)
         cost = len(path) - 1
         end_time = time.clock()

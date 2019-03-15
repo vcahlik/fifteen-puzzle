@@ -1,7 +1,7 @@
-from prototype.board import Board
-
-
 class Algorithm:
-    def __init__(self, goal_test, metric=None):
+    def __init__(self, goal_test, metrics: list = None):
+        if metrics is None:
+            metrics = list()
+
         self.goal_test = goal_test
-        self.metric = metric
+        self.metrics = metrics

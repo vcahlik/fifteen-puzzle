@@ -5,8 +5,8 @@ from exceptions import GoalNotFoundError
 
 
 class DFS(GraphSearchAlgorithm):
-    def __init__(self, heuristic, goal_test=Board.is_solved, cost_limit=None, metric=None, las_vegas_randomization=False):
-        super().__init__(goal_test, metric)
+    def __init__(self, heuristic, goal_test=Board.is_solved, cost_limit=None, metrics=None, las_vegas_randomization=False):
+        super().__init__(goal_test, metrics)
         self.heuristic = heuristic
         self.cost_limit = cost_limit
         self.las_vegas_randomization = las_vegas_randomization

@@ -6,8 +6,8 @@ from exceptions import GoalNotFoundError
 
 
 class AStarSearch(GraphSearchAlgorithm):
-    def __init__(self, heuristic, goal_test=Board.is_solved, metric=None, las_vegas_randomization=False):
-        super().__init__(goal_test, metric)
+    def __init__(self, heuristic, goal_test=Board.is_solved, metrics=None, las_vegas_randomization=False):
+        super().__init__(goal_test, metrics)
         self.heuristic = heuristic
         self.las_vegas_randomization = las_vegas_randomization
 

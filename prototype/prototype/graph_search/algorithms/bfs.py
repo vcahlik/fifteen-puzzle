@@ -5,8 +5,8 @@ import custom_queue
 
 
 class BFS(GraphSearchAlgorithm):
-    def __init__(self, goal_test=Board.is_solved, metric=None, las_vegas_randomization=False):
-        super().__init__(goal_test, metric)
+    def __init__(self, goal_test=Board.is_solved, metrics=None, las_vegas_randomization=False):
+        super().__init__(goal_test, metrics)
         self.las_vegas_randomization = las_vegas_randomization
 
         self.path = None
