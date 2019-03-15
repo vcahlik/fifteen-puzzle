@@ -1,5 +1,5 @@
 import numpy as np
-from .heuristic import Heuristic
+from heuristic import Heuristic
 
 
 class NeuralNetworkHeuristic(Heuristic):

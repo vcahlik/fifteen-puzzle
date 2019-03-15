@@ -1,5 +1,5 @@
 from board import Board
-from .heuristic import Heuristic
+from heuristic import Heuristic
 
 
 class ManhattanDistanceHeuristic(Heuristic):

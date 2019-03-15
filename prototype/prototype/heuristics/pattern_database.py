@@ -1,11 +1,11 @@
 import pickle
 from graph_search.node import Node
-from board import Board, PartialBoard
+from board import PartialBoard
 import custom_queue
 import copy
 from utils import debug_print
 from multiprocessing import Pool
-from .heuristic import Heuristic
+from heuristic import Heuristic
 import prototype.constants
 import os
 

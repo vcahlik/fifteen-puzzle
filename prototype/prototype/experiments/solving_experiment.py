@@ -14,7 +14,7 @@ class SolvingExperiment:
         self.run_no = 0
         self.results = []
 
-    def _solve(self, board, heuristic):
+    def _solve(self, board, algorithm, heuristic):
         start_time = time.clock()
         path, expanded_nodes = iterative_deepening_a_star_search(ForwardSearchNode(board), heuristic)
         cost = len(path) - 1
@@ -29,8 +29,6 @@ class SolvingExperiment:
         return cost
 
     def start(self):
-        durations = {heuristic: list() for heuristic in self.heuristics}
-
         try:
             while True:
                 self.run_no = self.run_no + 1
@@ -38,15 +36,9 @@ class SolvingExperiment:
                 board = Board()
                 board.shuffle(self.n_shuffles)
 
-                solution_lengths = set()
-
-                for heuristic in self.heuristics:
-                    current_heuristic_durations = durations[heuristic]
-                    cost = self._solve(board, heuristic)
-                    solution_lengths.add(cost)
-
-                if len(solution_lengths) > 1:
-                    debug_print("Optimal solution lengths mismatch!")
+                for algorithm in self.algorithms:
+                    for heuristic in self.heuristics:
+                        self._solve(board, algorithm, heuristic)
 
                 if self.run_no >= self.n_runs > 0:
                     break
