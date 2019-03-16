@@ -7,7 +7,7 @@ from algorithm import ResultType
 
 
 class DFS(GraphSearchAlgorithm):
-    def __init__(self, heuristic, goal_test=Board.is_solved, cost_limit=None, las_vegas_randomization=False):
+    def __init__(self, heuristic=None, goal_test=Board.is_solved, cost_limit=None, las_vegas_randomization=False):
         super().__init__(goal_test)
         self.heuristic = heuristic
         self.cost_limit = cost_limit
@@ -22,7 +22,7 @@ class DFS(GraphSearchAlgorithm):
         self.reset()
         open_nodes = FastLookupQueue()
         open_nodes.push_right(init_node)
-        n_expanded = None
+        n_expanded = 0
 
         start_time = time.time()
 
@@ -32,9 +32,9 @@ class DFS(GraphSearchAlgorithm):
             if self.goal_test(node.board):
                 self.path = node.path()
 
-                self.results[ResultType.SOLUTION_COST] = len(self.path) - 1
-                self.results[ResultType.EXPANDED_NODES] = n_expanded
-                self.results[ResultType.RUN_TIME] = time.time() - start_time
+                self.results[ResultType.SOLUTION_COST.name] = len(self.path) - 1
+                self.results[ResultType.EXPANDED_NODES.name] = n_expanded
+                self.results[ResultType.RUN_TIME.name] = time.time() - start_time
 
                 return
             for child in node.children(shuffle=self.las_vegas_randomization):
@@ -42,4 +42,6 @@ class DFS(GraphSearchAlgorithm):
                 if estimated_cost <= self.cost_limit:
                     open_nodes.push_right(child)
 
+        self.results[ResultType.EXPANDED_NODES.name] = n_expanded
+        self.results[ResultType.RUN_TIME.name] = time.time() - start_time
         raise GoalNotFoundError()

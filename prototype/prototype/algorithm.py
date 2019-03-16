@@ -17,9 +17,9 @@ class Algorithm:
     @staticmethod
     def get_default_results():
         return {
-            ResultType.RUN_TIME: None,
-            ResultType.SOLUTION_COST: None,
-            ResultType.EXPANDED_NODES: None
+            ResultType.RUN_TIME.name: None,
+            ResultType.SOLUTION_COST.name: None,
+            ResultType.EXPANDED_NODES.name: None
         }
 
     def name(self):

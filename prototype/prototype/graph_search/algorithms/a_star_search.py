@@ -7,7 +7,7 @@ from algorithm import ResultType
 
 
 class AStarSearch(GraphSearchAlgorithm):
-    def __init__(self, heuristic, goal_test=Board.is_solved, las_vegas_randomization=False):
+    def __init__(self, heuristic=None, goal_test=Board.is_solved, las_vegas_randomization=False):
         super().__init__(goal_test)
         self.heuristic = heuristic
         self.las_vegas_randomization = las_vegas_randomization
@@ -31,16 +31,16 @@ class AStarSearch(GraphSearchAlgorithm):
             if self.goal_test(node.board):
                 self.path = node.path()
 
-                self.results[ResultType.SOLUTION_COST] = len(self.path) - 1
-                self.results[ResultType.EXPANDED_NODES] = len(closed_nodes) + 1
-                self.results[ResultType.RUN_TIME] = time.time() - start_time
+                self.results[ResultType.SOLUTION_COST.name] = len(self.path) - 1
+                self.results[ResultType.EXPANDED_NODES.name] = len(closed_nodes) + 1
+                self.results[ResultType.RUN_TIME.name] = time.time() - start_time
 
                 return
             for child in node.children(shuffle=self.las_vegas_randomization):
                 if child in closed_nodes:
                     continue
                 curr_estimated_cost = open_nodes.get_priority(child)
-                child_estimated_cost = child.estimate_cost + self.heuristic.estimate_cost(child.board)
+                child_estimated_cost = child.cost + self.heuristic.estimate_cost(child.board)
                 if curr_estimated_cost is None or curr_estimated_cost > child_estimated_cost:
                     open_nodes.push(child, child_estimated_cost)
                     closed_nodes.add(node)

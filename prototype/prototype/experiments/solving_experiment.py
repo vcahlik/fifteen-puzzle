@@ -3,6 +3,7 @@ from prototype.utils import debug_print
 from prototype.graph_search.node import ForwardSearchNode
 from algorithm import Algorithm
 import time
+import sys
 
 
 class SolvingExperiment:
@@ -20,16 +21,20 @@ class SolvingExperiment:
 
         column_names.append("ALGORITHM_NAME")
         column_names.append("HEURISTIC_NAME")
-        column_names.extend(Algorithm.get_default_results().keys())
+
+        result_type_names = [result_type for result_type in Algorithm.get_default_results().keys()]
+        column_names.extend(result_type_names)
 
         print(",".join(column_names))
 
     def print_csv_results_row(self, algorithm, heuristic):
+        algorithm_results = ["" if value is None else str(round(value, 6)) for value in algorithm.results.values()]
+
         values = list()
 
         values.append(algorithm.name())
         values.append(heuristic.name())
-        values.extend(algorithm.results.values())
+        values.extend(algorithm_results)
 
         print(",".join(values))
 
@@ -43,14 +48,14 @@ class SolvingExperiment:
         #         \t\tduration: {round(duration, 6)}\t\tmean duration: {mh_mean_duration}")
 
     def start(self):
+        self.print_csv_column_names_row()
+
         try:
             while True:
                 self.run_no = self.run_no + 1
 
                 board = Board()
                 board.shuffle(self.n_shuffles)
-
-                self.print_csv_column_names_row()
 
                 for algorithm in self.algorithms:
                     for heuristic in self.heuristics:

@@ -31,9 +31,9 @@ class BFS(GraphSearchAlgorithm):
             if self.goal_test(node.board):
                 self.path = node.path()
 
-                self.results[ResultType.SOLUTION_COST] = len(self.path) - 1
-                self.results[ResultType.EXPANDED_NODES] = len(closed_nodes) + 1
-                self.results[ResultType.RUN_TIME] = time.time() - start_time
+                self.results[ResultType.SOLUTION_COST.name] = len(self.path) - 1
+                self.results[ResultType.EXPANDED_NODES.name] = len(closed_nodes) + 1
+                self.results[ResultType.RUN_TIME.name] = time.time() - start_time
 
                 return
             for child in node.children(shuffle=self.las_vegas_randomization):
