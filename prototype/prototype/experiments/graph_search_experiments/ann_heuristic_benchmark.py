@@ -1,0 +1,53 @@
+from prototype.heuristics.pattern_database_heuristic import PatternDatabaseHeuristic
+from prototype.experiments.experiment import Experiment
+from prototype.graph_search.search_algorithms import AStarSearch
+from prototype.experiments.dataset_generator import DatasetGenerator
+from prototype.heuristics.ann_heuristic import ANNHeuristic
+import prototype.constants as constants
+import keras
+import os
+
+
+def create_experiment(output_file_path):
+    algorithms = list()
+    algorithms.append(AStarSearch())
+    # algorithms.append(IDAStarSearch())
+
+    heuristics = list()
+
+    pdb = PatternDatabaseHeuristic(2)
+    # pdb.pre_calculate_db()
+    pdb.load_db()
+    heuristics.append(pdb)
+
+    pdb = PatternDatabaseHeuristic(3)
+    # pdb.pre_calculate_db()
+    pdb.load_db()
+    heuristics.append(pdb)
+
+    pdb = PatternDatabaseHeuristic(4)
+    # pdb.pre_calculate_db()
+    pdb.load_db()
+    heuristics.append(pdb)
+
+    model = keras.models.load_model(os.path.join(constants.PROJECT_ROOT, 'data/keras-1024-1024-512-128-64.h5'))
+
+    heuristics.append(ANNHeuristic(model, additive_constant=-2))
+    heuristics.append(ANNHeuristic(model, additive_constant=0))
+    heuristics.append(ANNHeuristic(model, additive_constant=2))
+
+    return Experiment(algorithms, heuristics, 40, output_file_path=output_file_path)
+
+
+def process_entry_point(output_file_path):
+    experiment = create_experiment(output_file_path)
+    experiment.start()
+
+
+if __name__ == "__main__":
+    output_file_path = constants.PROJECT_ROOT + "/data/experiments/random_boards_500_shuffles.csv"
+    args = (output_file_path,)
+    experiment = create_experiment(output_file_path)
+
+    generator = DatasetGenerator(process_entry_point, args, output_file_path, experiment.print_csv_column_names_row)
+    generator.run()

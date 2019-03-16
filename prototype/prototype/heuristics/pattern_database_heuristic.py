@@ -1,16 +1,15 @@
+from prototype.graph_search.node import Node
+from prototype.board import PartialBoard
+from prototype.utils import debug_print, FastLookupQueue
+from prototype.heuristics.heuristic import Heuristic
+import prototype.constants as constants
 import pickle
-from graph_search.node import Node
-from board import PartialBoard
-import custom_queue
-import copy
-from utils import debug_print
-from multiprocessing import Pool
-from heuristic import Heuristic
-import prototype.constants
+import multiprocessing
 import os
+import copy
 
 
-PATTERN_DATABASE_FOLDER = os.path.join(prototype.constants.PROJECT_ROOT, "data/pattern-databases/prototype")
+PATTERN_DATABASE_FOLDER = os.path.join(constants.PROJECT_ROOT, "data/pattern-databases/prototype")
 
 
 class Subproblem(Heuristic):
@@ -78,11 +77,11 @@ class Subproblem(Heuristic):
 
     def pre_calculate_db(self):
         init_node = self.PreCalculationNode(PartialBoard(self.pebbles))
-        open_nodes = custom_queue.FastLookupQueue()
+        open_nodes = FastLookupQueue()
         open_nodes.push_right(init_node)
 
         while len(open_nodes) > 0:
-            expansion_open_nodes = custom_queue.FastLookupQueue()
+            expansion_open_nodes = FastLookupQueue()
             expansion_open_nodes.push_right(open_nodes.pop_left())
 
             while len(expansion_open_nodes) > 0:
@@ -149,9 +148,11 @@ _pattern_definitions = {
 }
 
 
-class PatternDatabaseHeuristic:
-    def __init__(self, pattern_size=2):
-        self.subproblems = [Subproblem(pebbles) for pebbles in _pattern_definitions[pattern_size]]
+class PatternDatabaseHeuristic(Heuristic):
+    def __init__(self, max_pattern_size=2, custom_name=None):
+        super().__init__(custom_name)
+        self.max_pattern_size = max_pattern_size
+        self.subproblems = [Subproblem(pebbles) for pebbles in _pattern_definitions[max_pattern_size]]
 
     def estimate_cost(self, board):
         return sum([subproblem.cost(board.pebble_positions_subset(subproblem.pebbles)) for subproblem in self.subproblems])
@@ -174,7 +175,7 @@ class PatternDatabaseHeuristic:
 
         debug_print("Database precalculation started.")
 
-        pool = Pool(n_processes)
+        pool = multiprocessing.Pool(n_processes)
         pool.map(self._precalculation_worker, self.subproblems)
 
         debug_print("Database precalculation complete.")
@@ -188,7 +189,8 @@ class PatternDatabaseHeuristic:
         for i, subproblem in enumerate(self.subproblems):
             subproblem.db_folder_path = folder_path
             with open(subproblem.db_file_path(), 'rb') as f:
-                self.subproblems[i] = pickle.load(f)
+                a = pickle.load(f)
+                self.subproblems[i] = a
 
         debug_print("Database loaded.")
 
@@ -196,3 +198,10 @@ class PatternDatabaseHeuristic:
         subproblem.pre_calculate_db()
         debug_print(f"Subproblem {subproblem.pebbles}: done.")
         return subproblem
+
+    def name(self):
+        if self.custom_name is not None:
+            return self.custom_name
+
+        name = self.__class__.__name__ + f"[Max pattern size: {self.max_pattern_size}]"
+        return name

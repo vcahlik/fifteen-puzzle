@@ -1,6 +1,5 @@
 from enum import Enum
 import array
-import copy
 import numpy as np
 import hashlib
 import random
@@ -106,11 +105,11 @@ class Board:
     #     TODO check using permutation sign and distance of blank from goal
         # return True
 
-    def shuffle(self, n_moves_min=1000, randomize: bool = False):
+    def shuffle(self, n_moves_min=1000, randomize_n_moves: bool = True):
         last_direction = None
 
         n_moves = n_moves_min
-        if randomize:
+        if randomize_n_moves:
             n_moves = n_moves + random.randint(0, 1)
 
         for _ in range(n_moves):
@@ -137,3 +136,22 @@ class PartialBoard(Board):
         for i, pebble in enumerate(self.config):
             if pebble != 0 and pebble not in pebbles:
                 self.config[i] = self._IGNORED_PEBBLE
+
+
+class RandomBoardsGenerator:
+    def __init__(self):
+        pass
+
+    def random_board(self):
+        pass
+
+
+class ShufflingBoardsGenerator:
+    def __init__(self, n_shuffles, randomize_n_moves=True):
+        self.n_shuffles = n_shuffles
+        self.randomize_n_moves = randomize_n_moves
+
+    def random_board(self):
+        board = Board()
+        board.shuffle(self.n_shuffles, self.randomize_n_moves)
+        return board

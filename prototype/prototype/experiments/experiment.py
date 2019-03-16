@@ -1,42 +1,49 @@
 from prototype.board import Board
-from prototype.utils import debug_print
+from prototype.utils import debug_print, atomic_row_write
 from prototype.graph_search.node import ForwardSearchNode
-from algorithm import Algorithm
-import time
-import sys
+from prototype.algorithm import Algorithm
 
 
-class SolvingExperiment:
-    def __init__(self, algorithms: list, heuristics: list, n_shuffles: int, n_runs: int = -1):
+class Experiment:
+    def __init__(self, algorithms: list, heuristics: list, boards_generator, n_runs: int = -1, output_file_path=None):
         self.algorithms = algorithms
         self.heuristics = heuristics
-        self.n_shuffles = n_shuffles
+        self.boards_generator = boards_generator
         self.n_runs = n_runs
+        self.output_file_path = output_file_path
 
-        self.run_no = 0
+        self.board_no = 0
         self.results = []
 
     def print_csv_column_names_row(self):
         column_names = list()
 
+        column_names.append("BOARD_ID")
         column_names.append("ALGORITHM_NAME")
         column_names.append("HEURISTIC_NAME")
 
         result_type_names = [result_type for result_type in Algorithm.get_default_results().keys()]
         column_names.extend(result_type_names)
 
-        print(",".join(column_names))
+        row = ",".join(column_names)
+        print(row)
+        if self.output_file_path is not None:
+            atomic_row_write(self.output_file_path, row)
 
     def print_csv_results_row(self, algorithm, heuristic):
         algorithm_results = ["" if value is None else str(round(value, 6)) for value in algorithm.results.values()]
 
         values = list()
 
+        values.append(str(self.board_no))
         values.append(algorithm.name())
         values.append(heuristic.name())
         values.extend(algorithm_results)
 
-        print(",".join(values))
+        row = ",".join(values)
+        print(row)
+        if self.output_file_path is not None:
+            atomic_row_write(self.output_file_path, row)
 
     def _solve(self, board, algorithm, heuristic):
         algorithm.heuristic = heuristic
@@ -44,24 +51,18 @@ class SolvingExperiment:
 
         self.print_csv_results_row(algorithm, heuristic)
 
-        # debug_print(f"Experiment: {type(heuristic).__name__}: len: {cost}\t\texpanded: {expanded_nodes}\
-        #         \t\tduration: {round(duration, 6)}\t\tmean duration: {mh_mean_duration}")
-
     def start(self):
-        self.print_csv_column_names_row()
-
         try:
             while True:
-                self.run_no = self.run_no + 1
+                self.board_no = self.board_no + 1
 
-                board = Board()
-                board.shuffle(self.n_shuffles)
+                board = self.boards_generator.random_board()
 
                 for algorithm in self.algorithms:
                     for heuristic in self.heuristics:
                         self._solve(board, algorithm, heuristic)
 
-                if self.run_no >= self.n_runs > 0:
+                if self.board_no >= self.n_runs > 0:
                     break
         except KeyboardInterrupt:
             debug_print("Interrupted by user.")
