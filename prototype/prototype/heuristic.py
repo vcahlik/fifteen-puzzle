@@ -1,9 +1,5 @@
 class Heuristic:
-    def __init__(self, metrics: list = None, custom_name: str = None):
-        if metrics is None:
-            metrics = list()
-
-        self.metrics = metrics
+    def __init__(self, custom_name: str = None):
         self.custom_name = custom_name
 
     def estimate_cost(self, board):

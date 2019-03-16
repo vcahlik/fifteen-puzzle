@@ -1,7 +1,8 @@
 from prototype.board import Board
 from prototype.utils import debug_print
-import time
 from prototype.graph_search.node import ForwardSearchNode
+from algorithm import Algorithm
+import time
 
 
 class SolvingExperiment:
@@ -14,20 +15,32 @@ class SolvingExperiment:
         self.run_no = 0
         self.results = []
 
+    def print_csv_column_names_row(self):
+        column_names = list()
+
+        column_names.append("ALGORITHM_NAME")
+        column_names.append("HEURISTIC_NAME")
+        column_names.extend(Algorithm.get_default_results().keys())
+
+        print(",".join(column_names))
+
+    def print_csv_results_row(self, algorithm, heuristic):
+        values = list()
+
+        values.append(algorithm.name())
+        values.append(heuristic.name())
+        values.extend(algorithm.results.values())
+
+        print(",".join(values))
+
     def _solve(self, board, algorithm, heuristic):
-        start_time = time.clock()
+        algorithm.heuristic = heuristic
         algorithm.run(ForwardSearchNode(board))
-        path, expanded_nodes = iterative_deepening_a_star_search(ForwardSearchNode(board), heuristic)
-        cost = len(path) - 1
-        end_time = time.clock()
-        duration = end_time - start_time
 
-        durations.append(duration)
-        mh_mean_duration = np.mean(durations)
-        debug_print(f"Experiment: {type(heuristic).__name__}: len: {cost}\t\texpanded: {expanded_nodes}\
-                \t\tduration: {round(duration, 6)}\t\tmean duration: {mh_mean_duration}")
+        self.print_csv_results_row(algorithm, heuristic)
 
-        return cost
+        # debug_print(f"Experiment: {type(heuristic).__name__}: len: {cost}\t\texpanded: {expanded_nodes}\
+        #         \t\tduration: {round(duration, 6)}\t\tmean duration: {mh_mean_duration}")
 
     def start(self):
         try:
@@ -36,6 +49,8 @@ class SolvingExperiment:
 
                 board = Board()
                 board.shuffle(self.n_shuffles)
+
+                self.print_csv_column_names_row()
 
                 for algorithm in self.algorithms:
                     for heuristic in self.heuristics:
