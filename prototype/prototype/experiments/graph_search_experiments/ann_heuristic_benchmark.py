@@ -16,26 +16,16 @@ def create_experiment(output_file_path):
 
     heuristics = list()
 
-    pdb = PatternDatabaseHeuristic(2)
+    pdb = PatternDatabaseHeuristic(5)
     # pdb.pre_calculate_db()
     pdb.load_db()
     heuristics.append(pdb)
 
-    pdb = PatternDatabaseHeuristic(3)
-    # pdb.pre_calculate_db()
-    pdb.load_db()
-    heuristics.append(pdb)
-
-    pdb = PatternDatabaseHeuristic(4)
-    # pdb.pre_calculate_db()
-    pdb.load_db()
-    heuristics.append(pdb)
-
-    model = keras.models.load_model(os.path.join(constants.PROJECT_ROOT, 'data/keras-1024-1024-512-128-64.h5'))
-
-    heuristics.append(ANNHeuristic(model, additive_constant=-2))
-    heuristics.append(ANNHeuristic(model, additive_constant=0))
-    heuristics.append(ANNHeuristic(model, additive_constant=2))
+    # model = keras.models.load_model(os.path.join(constants.PROJECT_ROOT, 'data/keras-1024-1024-512-128-64.h5'))
+    #
+    # heuristics.append(ANNHeuristic(model, additive_constant=-2))
+    # heuristics.append(ANNHeuristic(model, additive_constant=0))
+    # heuristics.append(ANNHeuristic(model, additive_constant=2))
 
     boards_generator = RandomBoardsGenerator()
     return Experiment(

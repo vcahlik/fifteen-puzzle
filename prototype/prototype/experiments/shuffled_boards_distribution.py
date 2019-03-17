@@ -17,7 +17,7 @@ def create_experiment(output_file_path):
     pdb.load_db()
     heuristics.append(pdb)
 
-    boards_generator = ShufflingBoardsGenerator(1000)
+    boards_generator = ShufflingBoardsGenerator(10000)
     return Experiment(
         algorithms,
         heuristics,

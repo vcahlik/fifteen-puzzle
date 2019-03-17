@@ -129,7 +129,7 @@ class Board:
             self.blank_position = self.pebble_positions()[0]
         return self
 
-    def shuffle(self, n_moves_min=1000, randomize_n_moves: bool = True):
+    def shuffle(self, n_moves_min=10000, randomize_n_moves: bool = True):
         last_direction = None
 
         n_moves = n_moves_min
