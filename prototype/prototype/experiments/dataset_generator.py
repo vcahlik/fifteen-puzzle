@@ -1,3 +1,4 @@
+from prototype.utils import debug_print
 import multiprocessing
 import pathlib
 
@@ -24,3 +25,5 @@ class DatasetGenerator:
             p = multiprocessing.Process(target=self.entry_point, args=self.args)
             p.start()
             processes.append(p)
+
+        debug_print(f"Dataset generator started with {n_processes} processes.")

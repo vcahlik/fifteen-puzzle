@@ -13,7 +13,6 @@ class Experiment:
         self.output_file_path = output_file_path
 
         self.board_no = 0
-        self.results = []
 
     def print_csv_column_names_row(self):
         column_names = list()
