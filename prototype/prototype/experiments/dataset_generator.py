@@ -1,12 +1,14 @@
 from prototype.utils import debug_print
 import multiprocessing
 import pathlib
+import os
+import datetime
 
 
 class DatasetGenerator:
-    def __init__(self, entry_point, args, dataset_path, column_names_write_function):
+    def __init__(self, entry_point, kwargs, dataset_path, column_names_write_function):
         self.entry_point = entry_point
-        self.args = args
+        self.kwargs = kwargs
         self.dataset_path = dataset_path
         self.column_names_write_function = column_names_write_function
 
@@ -22,7 +24,7 @@ class DatasetGenerator:
 
         processes = []
         for i in range(0, n_processes):
-            p = multiprocessing.Process(target=self.entry_point, args=self.args)
+            p = multiprocessing.Process(target=self.entry_point, kwargs=self.kwargs)
             p.start()
             processes.append(p)
 

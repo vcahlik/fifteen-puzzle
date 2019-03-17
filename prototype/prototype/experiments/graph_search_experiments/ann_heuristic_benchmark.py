@@ -38,18 +38,22 @@ def create_experiment(output_file_path):
     heuristics.append(ANNHeuristic(model, additive_constant=2))
 
     boards_generator = RandomBoardsGenerator()
-    return Experiment(algorithms, heuristics, boards_generator, 40, output_file_path=output_file_path)
+    return Experiment(
+        algorithms,
+        heuristics,
+        boards_generator,
+        output_file_path=output_file_path)
 
 
-def process_entry_point(output_file_path):
-    experiment = create_experiment(output_file_path)
+def process_entry_point(**kwargs):
+    experiment = create_experiment(**kwargs)
     experiment.start()
 
 
 if __name__ == "__main__":
     output_file_path = constants.PROJECT_ROOT + "/data/experiments/ann-heuristic-benchmark.csv"
-    args = (output_file_path,)
+    kwargs = {"output_file_path": output_file_path}
     experiment = create_experiment(output_file_path)
 
-    generator = DatasetGenerator(process_entry_point, args, output_file_path, experiment.print_csv_column_names_row)
+    generator = DatasetGenerator(process_entry_point, kwargs, output_file_path, experiment.print_csv_column_names_row)
     generator.run()

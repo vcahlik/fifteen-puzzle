@@ -1,11 +1,16 @@
 from prototype.board import Board
-from prototype.utils import debug_print, atomic_row_write
+from prototype.utils import debug_print, atomic_row_write, timestamped_process_id
 from prototype.graph_search.node import ForwardSearchNode
 from prototype.algorithm import Algorithm
 
 
 class Experiment:
-    def __init__(self, algorithms: list, heuristics: list, boards_generator, n_runs: int = -1, output_file_path=None):
+    def __init__(self,
+                 algorithms: list,
+                 heuristics: list,
+                 boards_generator,
+                 n_runs: int = -1,
+                 output_file_path=None):
         self.algorithms = algorithms
         self.heuristics = heuristics
         self.boards_generator = boards_generator
@@ -13,10 +18,12 @@ class Experiment:
         self.output_file_path = output_file_path
 
         self.board_no = 0
+        self.process_id = timestamped_process_id()
 
     def print_csv_column_names_row(self):
         column_names = list()
 
+        column_names.append("PROCESS_ID")
         column_names.append("BOARD_ID")
         column_names.append("ALGORITHM_NAME")
         column_names.append("HEURISTIC_NAME")
@@ -34,6 +41,7 @@ class Experiment:
 
         values = list()
 
+        values.append(str(self.process_id))
         values.append(str(self.board_no))
         values.append(algorithm.name())
         values.append(heuristic.name())
