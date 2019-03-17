@@ -23,7 +23,7 @@ def create_experiment(output_file_path):
     model_path = os.path.join(constants.PROJECT_ROOT, 'data/keras-1024-1024-512-128-64.h5')
     heuristics.append(ANNHeuristic(model_path, additive_constant=0))
 
-    boards_generator = ChaoticShufflingBoardsGenerator(1500)
+    boards_generator = ChaoticShufflingBoardsGenerator(100)
     return Experiment(
         algorithms,
         heuristics,
@@ -37,7 +37,8 @@ def process_entry_point(**kwargs):
 
 
 if __name__ == "__main__":
-    output_file_path = constants.PROJECT_ROOT + "/data/experiments/chaotic-generator-heuristic-benchmark.csv"
+    # output_file_path = constants.PROJECT_ROOT + "/data/experiments/chaotic-generator-heuristic-benchmark.csv"
+    output_file_path = None
     kwargs = {"output_file_path": output_file_path}
     experiment = create_experiment(output_file_path)
 
