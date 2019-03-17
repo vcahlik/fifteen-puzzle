@@ -11,7 +11,6 @@ class ResultType(Enum):
 class Algorithm:
     def __init__(self, goal_test):
         self.goal_test = goal_test
-
         self.results = dict()
 
     @staticmethod

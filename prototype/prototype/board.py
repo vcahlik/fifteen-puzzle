@@ -180,8 +180,7 @@ class RandomBoardsGenerator(BoardsGenerator):
 
 
 class ShufflingBoardsGenerator(BoardsGenerator):
-    def __init__(self, n_shuffles, randomize_n_moves=True, custom_name: str = None):
-        super().__init__(custom_name)
+    def __init__(self, n_shuffles, randomize_n_moves=True):
         self.n_shuffles = n_shuffles
         self.randomize_n_moves = randomize_n_moves
 

@@ -3,20 +3,25 @@ from prototype.heuristics.heuristic import Heuristic
 
 
 class ANNHeuristic(Heuristic):
-    def __init__(self, model, additive_constant=0, custom_name=None):
-        super().__init__(custom_name)
-        self.model = model
+    def __init__(self, model_path, additive_constant=0):
+        self.model_path = model_path
         self.additive_constant = additive_constant
+
+        self._model = None
+
+    def get_model(self):
+        import keras  # Must be loaded in the worker process!
+
+        if self._model is None:
+            self._model = keras.models.load_model(self.model_path)
+
+        return self._model
 
     def estimate_cost(self, board):
         x = np.array(board.config)
         x_encoded = np.eye(16)[x].ravel()
-        y = self.model.predict(x_encoded.reshape(1, -1)).item()
+        y = self.get_model().predict(x_encoded.reshape(1, -1)).item()
         return y + float(self.additive_constant)
 
     def name(self):
-        if self.custom_name is not None:
-            return self.custom_name
-
-        name = f"ANN[Const:{self.additive_constant}]"
-        return name
+        return f"ANN[Const:{self.additive_constant}]"

@@ -13,6 +13,9 @@ class DatasetGenerator:
         self.column_names_write_function = column_names_write_function
 
     def _ensure_file_has_column_names_row(self):
+        if self.dataset_path is None:
+            return
+
         if not pathlib.Path(self.dataset_path).exists():
             self.column_names_write_function()
 

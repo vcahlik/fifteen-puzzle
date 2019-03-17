@@ -15,8 +15,7 @@ PATTERN_DATABASE_FOLDER = os.path.join(constants.PROJECT_ROOT, "data/pattern-dat
 class Subproblem(Heuristic):
     ZERO_COST = 255
 
-    def __init__(self, pebbles, custom_name=None):
-        super().__init__(custom_name)
+    def __init__(self, pebbles):
         self.pebbles = pebbles
         self.db = bytearray(self._db_size())
         self._db_coefficients = self._calculate_db_coefficients()
@@ -149,8 +148,7 @@ _pattern_definitions = {
 
 
 class PatternDatabaseHeuristic(Heuristic):
-    def __init__(self, max_pattern_size=2, custom_name=None):
-        super().__init__(custom_name)
+    def __init__(self, max_pattern_size=2):
         self.max_pattern_size = max_pattern_size
         self.subproblems = [Subproblem(pebbles) for pebbles in _pattern_definitions[max_pattern_size]]
 

@@ -5,8 +5,8 @@ from prototype.experiments.dataset_generator import DatasetGenerator
 from prototype.heuristics.ann_heuristic import ANNHeuristic
 from prototype.board import RandomBoardsGenerator, ShufflingBoardsGenerator
 import prototype.constants as constants
-import keras
 import os
+from prototype.board import Board
 
 
 def create_experiment(output_file_path):
@@ -21,11 +21,15 @@ def create_experiment(output_file_path):
     pdb.load_db()
     heuristics.append(pdb)
 
-    # model = keras.models.load_model(os.path.join(constants.PROJECT_ROOT, 'data/keras-1024-1024-512-128-64.h5'))
-    #
-    # heuristics.append(ANNHeuristic(model, additive_constant=-2))
-    # heuristics.append(ANNHeuristic(model, additive_constant=0))
-    # heuristics.append(ANNHeuristic(model, additive_constant=2))
+    pdb = PatternDatabaseHeuristic(4)
+    # pdb.pre_calculate_db()
+    pdb.load_db()
+    heuristics.append(pdb)
+
+    model_path = os.path.join(constants.PROJECT_ROOT, 'data/keras-1024-1024-512-128-64.h5')
+    heuristics.append(ANNHeuristic(model_path, additive_constant=-2))
+    heuristics.append(ANNHeuristic(model_path, additive_constant=0))
+    heuristics.append(ANNHeuristic(model_path, additive_constant=2))
 
     boards_generator = RandomBoardsGenerator()
     return Experiment(
