@@ -18,7 +18,7 @@ def create_experiment(output_file_path):
     heuristics.append(pdb)
 
     boards_generator = RandomBoardsGenerator()
-    return Experiment(algorithms, heuristics, boards_generator, 500, output_file_path=output_file_path)
+    return Experiment(algorithms, heuristics, boards_generator, output_file_path=output_file_path)
 
 
 def process_entry_point(output_file_path):
@@ -31,5 +31,5 @@ if __name__ == "__main__":
     args = (output_file_path,)
     experiment = create_experiment(output_file_path)
 
-    generator = DatasetGenerator(process_entry_point, args, output_file_path, experiment.print_csv_column_names_row)
-    generator.run()
+    dataset_generator = DatasetGenerator(process_entry_point, args, output_file_path, experiment.print_csv_column_names_row)
+    dataset_generator.run(4)

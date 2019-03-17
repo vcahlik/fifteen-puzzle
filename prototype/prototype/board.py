@@ -96,14 +96,38 @@ class Board:
         self.blank_position = target_position
         return replaced_pebble
 
-    # def randomize(self):
-    #     np.random.shuffle(self.config)
-    #     while not self.is_solvable():
-    #         np.random.shuffle(self.config)
+    def _count_inverses(self):
+        # Source: https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
+        # TODO: check for 5x5 boards is different!
 
-    # def is_solvable(self):
-    #     TODO check using permutation sign and distance of blank from goal
-        # return True
+        n_inverses = 0
+        for i in range(0, 16):
+            for j in range(i + 1, 16):
+                if (i != self.blank_position) \
+                        and (j != self.blank_position) \
+                        and (self.config[i] > self.config[j]):
+                    n_inverses = n_inverses + 1
+        return n_inverses
+
+    def is_solvable(self):
+        n_inverses = self._count_inverses()
+        blank_pos_x = 4 - self.position_to_index(self.blank_position)[0]
+
+        n_inverses_is_odd = n_inverses % 2
+        blank_pos_x_is_odd = blank_pos_x % 2
+
+        if n_inverses_is_odd:
+            return bool(not blank_pos_x_is_odd)
+        else:
+            return bool(blank_pos_x_is_odd)
+
+    def randomize(self):
+        np.random.RandomState().shuffle(self.config)
+        self.blank_position = self.pebble_positions()[0]
+        while not self.is_solvable():
+            np.random.shuffle(self.config)
+            self.blank_position = self.pebble_positions()[0]
+        return self
 
     def shuffle(self, n_moves_min=1000, randomize_n_moves: bool = True):
         last_direction = None
@@ -122,6 +146,9 @@ class Board:
             self.move_blank(direction)
             last_direction = direction
 
+        return self
+
+    # TODO rename
     def get_pebble_indexes(self, pebbles):
         return np.array([np.argwhere(self.config == i)[0] for i in pebbles])
 
@@ -139,11 +166,9 @@ class PartialBoard(Board):
 
 
 class RandomBoardsGenerator:
-    def __init__(self):
-        pass
-
     def random_board(self):
-        pass
+        board = Board()
+        return board.randomize()
 
 
 class ShufflingBoardsGenerator:
@@ -153,5 +178,4 @@ class ShufflingBoardsGenerator:
 
     def random_board(self):
         board = Board()
-        board.shuffle(self.n_shuffles, self.randomize_n_moves)
-        return board
+        return board.shuffle(self.n_shuffles, self.randomize_n_moves)

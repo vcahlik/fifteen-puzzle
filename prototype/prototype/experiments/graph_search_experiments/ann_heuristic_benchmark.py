@@ -3,6 +3,7 @@ from prototype.experiments.experiment import Experiment
 from prototype.graph_search.search_algorithms import AStarSearch
 from prototype.experiments.dataset_generator import DatasetGenerator
 from prototype.heuristics.ann_heuristic import ANNHeuristic
+from prototype.board import RandomBoardsGenerator
 import prototype.constants as constants
 import keras
 import os
@@ -36,7 +37,8 @@ def create_experiment(output_file_path):
     heuristics.append(ANNHeuristic(model, additive_constant=0))
     heuristics.append(ANNHeuristic(model, additive_constant=2))
 
-    return Experiment(algorithms, heuristics, 40, output_file_path=output_file_path)
+    boards_generator = RandomBoardsGenerator()
+    return Experiment(algorithms, heuristics, boards_generator, 40, output_file_path=output_file_path)
 
 
 def process_entry_point(output_file_path):
@@ -45,7 +47,7 @@ def process_entry_point(output_file_path):
 
 
 if __name__ == "__main__":
-    output_file_path = constants.PROJECT_ROOT + "/data/experiments/random_boards_500_shuffles.csv"
+    output_file_path = constants.PROJECT_ROOT + "/data/experiments/ann-heuristic-benchmark.csv"
     args = (output_file_path,)
     experiment = create_experiment(output_file_path)
 
