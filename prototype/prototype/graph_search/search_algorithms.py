@@ -111,6 +111,7 @@ class AStarSearch(GraphSearchAlgorithm):
         open_nodes.push(init_node, self.heuristic.estimate_cost(init_node.board))
         closed_nodes = set()
 
+        self.results[ResultType.INITIAL_HEURISTIC_PREDICTION.name] = self.heuristic.estimate_cost(init_node.board)
         start_time = time.time()
 
         while len(open_nodes) > 0:
@@ -150,6 +151,7 @@ class IDAStarSearch(GraphSearchAlgorithm):
         cost_limited_dfs = DFS(self.heuristic, self.goal_test, initial_cost_limit, self.las_vegas_randomization)
         n_expanded = 0
 
+        self.results[ResultType.INITIAL_HEURISTIC_PREDICTION.name] = self.heuristic.estimate_cost(init_node.board)
         start_time = time.time()
 
         while True:

@@ -5,6 +5,7 @@ class ResultType(Enum):
     RUN_TIME = 1
     SOLUTION_COST = 2
     EXPANDED_NODES = 3
+    INITIAL_HEURISTIC_PREDICTION = 4
 
 
 class Algorithm:
@@ -19,7 +20,8 @@ class Algorithm:
         return {
             ResultType.RUN_TIME.name: None,
             ResultType.SOLUTION_COST.name: None,
-            ResultType.EXPANDED_NODES.name: None
+            ResultType.EXPANDED_NODES.name: None,
+            ResultType.INITIAL_HEURISTIC_PREDICTION.name: None
         }
 
     def name(self):
