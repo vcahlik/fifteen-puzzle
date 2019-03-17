@@ -17,7 +17,7 @@ def create_experiment(output_file_path):
     pdb.load_db()
     heuristics.append(pdb)
 
-    boards_generator = ShufflingBoardsGenerator(500)
+    boards_generator = ShufflingBoardsGenerator(1000)
     return Experiment(
         algorithms,
         heuristics,
@@ -36,4 +36,4 @@ if __name__ == "__main__":
     experiment = create_experiment(output_file_path)
 
     dataset_generator = DatasetGenerator(process_entry_point, kwargs, output_file_path, experiment.print_csv_column_names_row)
-    dataset_generator.run(2)
+    dataset_generator.run()

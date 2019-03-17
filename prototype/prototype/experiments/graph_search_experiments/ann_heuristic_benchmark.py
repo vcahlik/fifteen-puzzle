@@ -3,8 +3,9 @@ from prototype.experiments.experiment import Experiment
 from prototype.graph_search.search_algorithms import AStarSearch
 from prototype.experiments.dataset_generator import DatasetGenerator
 from prototype.heuristics.ann_heuristic import ANNHeuristic
-from prototype.board import RandomBoardsGenerator
+from prototype.board import RandomBoardsGenerator, ShufflingBoardsGenerator
 import prototype.constants as constants
+import keras
 import os
 
 
@@ -54,5 +55,5 @@ if __name__ == "__main__":
     kwargs = {"output_file_path": output_file_path}
     experiment = create_experiment(output_file_path)
 
-    generator = DatasetGenerator(process_entry_point, kwargs, output_file_path, experiment.print_csv_column_names_row)
-    generator.run()
+    dataset_generator = DatasetGenerator(process_entry_point, kwargs, output_file_path, experiment.print_csv_column_names_row)
+    dataset_generator.run()

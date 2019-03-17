@@ -1,3 +1,3 @@
 import os
 
-PROJECT_ROOT = '/home/batman/code/fifteen-puzzle'
+PROJECT_ROOT = f"/home/{os.environ['USER']}/code/fifteen-puzzle"
