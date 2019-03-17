@@ -1,4 +1,4 @@
-name: fifteen-puzzle
+name: fifteen-puzzle-gpu
 channels:
   - pytorch
 dependencies:
