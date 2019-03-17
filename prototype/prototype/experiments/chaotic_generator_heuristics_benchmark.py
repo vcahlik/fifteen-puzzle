@@ -3,10 +3,9 @@ from prototype.experiments.experiment import Experiment
 from prototype.graph_search.search_algorithms import AStarSearch
 from prototype.experiments.dataset_generator import DatasetGenerator
 from prototype.heuristics.ann_heuristic import ANNHeuristic
-from prototype.board import RandomBoardsGenerator, ShufflingBoardsGenerator
+from prototype.board import ChaoticShufflingBoardsGenerator
 import prototype.constants as constants
 import os
-from prototype.board import Board
 
 
 def create_experiment(output_file_path):
@@ -26,7 +25,7 @@ def create_experiment(output_file_path):
     heuristics.append(ANNHeuristic(model_path, additive_constant=0))
     heuristics.append(ANNHeuristic(model_path, additive_constant=2))
 
-    boards_generator = RandomBoardsGenerator()
+    boards_generator = ChaoticShufflingBoardsGenerator(1500)
     return Experiment(
         algorithms,
         heuristics,
@@ -40,7 +39,7 @@ def process_entry_point(**kwargs):
 
 
 if __name__ == "__main__":
-    output_file_path = constants.PROJECT_ROOT + "/data/experiments/ann-heuristic-benchmark.csv"
+    output_file_path = constants.PROJECT_ROOT + "/data/experiments/chaotic-generator-heuristic-benchmark.csv"
     kwargs = {"output_file_path": output_file_path}
     experiment = create_experiment(output_file_path)
 

@@ -31,7 +31,7 @@ def process_entry_point(**kwargs):
 
 
 if __name__ == "__main__":
-    output_file_path = constants.PROJECT_ROOT + "/data/experiments/random_boards.csv"
+    output_file_path = constants.PROJECT_ROOT + "/data/experiments/random-boards.csv"
     kwargs = {"output_file_path": output_file_path}
     experiment = create_experiment(output_file_path)
 

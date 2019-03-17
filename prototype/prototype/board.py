@@ -190,3 +190,16 @@ class ShufflingBoardsGenerator(BoardsGenerator):
 
     def name(self):
         return f"SHF[Cnt:{self.n_shuffles}]"
+
+
+class ChaoticShufflingBoardsGenerator(BoardsGenerator):
+    def __init__(self, n_shuffles_max):
+        self.n_shuffles_max = n_shuffles_max
+
+    def random_board(self):
+        board = Board()
+        n_shuffles = random.randint(0, self.n_shuffles_max)
+        return board.shuffle(n_shuffles, False)
+
+    def name(self):
+        return f"ChaoticSHF[MaxCnt:{self.n_shuffles_max}]"
