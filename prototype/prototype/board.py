@@ -166,23 +166,17 @@ class PartialBoard(Board):
 
 
 class BoardsGenerator:
-    def __init__(self, custom_name: str = None):
-        self.custom_name = custom_name
-
     def name(self):
-        if self.custom_name is not None:
-            return self.custom_name
-
         return self.__class__.__name__
 
 
 class RandomBoardsGenerator(BoardsGenerator):
-    def __init__(self, custom_name: str = None):
-        super().__init__(custom_name)
-
     def random_board(self):
         board = Board()
         return board.randomize()
+
+    def name(self):
+        return "RND"
 
 
 class ShufflingBoardsGenerator(BoardsGenerator):
@@ -196,8 +190,4 @@ class ShufflingBoardsGenerator(BoardsGenerator):
         return board.shuffle(self.n_shuffles, self.randomize_n_moves)
 
     def name(self):
-        if self.custom_name is not None:
-            return self.custom_name
-
-        name = self.__class__.__name__ + f"[Shuffles: {self.n_shuffles}]"
-        return name
+        return f"SHF[Cnt:{self.n_shuffles}]"

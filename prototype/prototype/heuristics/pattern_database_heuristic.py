@@ -200,8 +200,4 @@ class PatternDatabaseHeuristic(Heuristic):
         return subproblem
 
     def name(self):
-        if self.custom_name is not None:
-            return self.custom_name
-
-        name = self.__class__.__name__ + f"[Max pattern size: {self.max_pattern_size}]"
-        return name
+        return f"PDB[Pat:{self.max_pattern_size}]"

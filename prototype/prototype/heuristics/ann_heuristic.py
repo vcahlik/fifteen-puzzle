@@ -18,5 +18,5 @@ class ANNHeuristic(Heuristic):
         if self.custom_name is not None:
             return self.custom_name
 
-        name = self.__class__.__name__ + f"[Additive constant: {self.additive_constant}]"
+        name = f"ANN[Const:{self.additive_constant}]"
         return name

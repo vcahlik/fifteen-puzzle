@@ -12,3 +12,6 @@ class ManhattanDistanceHeuristic(Heuristic):
         pebble_costs = [abs(index[0] - solved_index[0]) + abs(index[1] - solved_index[1])
                         for index, solved_index in zip(indexes, self._solved_indexes)]
         return sum(pebble_costs)
+
+    def name(self):
+        return "MD"

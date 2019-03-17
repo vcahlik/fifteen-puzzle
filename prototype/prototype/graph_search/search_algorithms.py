@@ -51,6 +51,9 @@ class BFS(GraphSearchAlgorithm):
 
         raise exceptions.GoalNotFoundError()
 
+    def name(self):
+        return "BFS"
+
 
 class DFS(GraphSearchAlgorithm):
     def __init__(self, heuristic=None, goal_test=Board.is_solved, cost_limit=None, las_vegas_randomization=False):
@@ -91,6 +94,9 @@ class DFS(GraphSearchAlgorithm):
         self.results[ResultType.EXPANDED_NODES.name] = n_expanded
         self.results[ResultType.RUN_TIME.name] = time.time() - start_time
         raise exceptions.GoalNotFoundError()
+
+    def name(self):
+        return f"DFS"
 
 
 class AStarSearch(GraphSearchAlgorithm):
@@ -135,6 +141,9 @@ class AStarSearch(GraphSearchAlgorithm):
 
         raise exceptions.GoalNotFoundError()
 
+    def name(self):
+        return "A*"
+
 
 class IDAStarSearch(GraphSearchAlgorithm):
     def __init__(self, heuristic=None, goal_test=Board.is_solved, las_vegas_randomization=False):
@@ -168,3 +177,6 @@ class IDAStarSearch(GraphSearchAlgorithm):
             self.results[ResultType.RUN_TIME.name] = time.time() - start_time
 
             return
+
+    def name(self):
+        return "IDA*"

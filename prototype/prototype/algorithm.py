@@ -9,9 +9,8 @@ class ResultType(Enum):
 
 
 class Algorithm:
-    def __init__(self, goal_test, custom_name: str = None):
+    def __init__(self, goal_test):
         self.goal_test = goal_test
-        self.custom_name = custom_name
 
         self.results = dict()
 
@@ -25,9 +24,6 @@ class Algorithm:
         }
 
     def name(self):
-        if self.custom_name is not None:
-            return self.custom_name
-
         return self.__class__.__name__
 
     def get_result(self, result_type: ResultType):
