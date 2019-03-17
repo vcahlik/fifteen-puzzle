@@ -27,6 +27,7 @@ class Experiment:
         column_names.append("BOARD_ID")
         column_names.append("ALGORITHM_NAME")
         column_names.append("HEURISTIC_NAME")
+        column_names.append("BOARDS_GENERATOR_NAME")
 
         result_type_names = [result_type for result_type in Algorithm.get_default_results().keys()]
         column_names.extend(result_type_names)
@@ -45,6 +46,7 @@ class Experiment:
         values.append(str(self.board_no))
         values.append(algorithm.name())
         values.append(heuristic.name())
+        values.append(self.boards_generator.name())
         values.extend(algorithm_results)
 
         row = ",".join(values)

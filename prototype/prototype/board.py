@@ -165,17 +165,39 @@ class PartialBoard(Board):
                 self.config[i] = self._IGNORED_PEBBLE
 
 
-class RandomBoardsGenerator:
+class BoardsGenerator:
+    def __init__(self, custom_name: str = None):
+        self.custom_name = custom_name
+
+    def name(self):
+        if self.custom_name is not None:
+            return self.custom_name
+
+        return self.__class__.__name__
+
+
+class RandomBoardsGenerator(BoardsGenerator):
+    def __init__(self, custom_name: str = None):
+        super().__init__(custom_name)
+
     def random_board(self):
         board = Board()
         return board.randomize()
 
 
-class ShufflingBoardsGenerator:
-    def __init__(self, n_shuffles, randomize_n_moves=True):
+class ShufflingBoardsGenerator(BoardsGenerator):
+    def __init__(self, n_shuffles, randomize_n_moves=True, custom_name: str = None):
+        super().__init__(custom_name)
         self.n_shuffles = n_shuffles
         self.randomize_n_moves = randomize_n_moves
 
     def random_board(self):
         board = Board()
         return board.shuffle(self.n_shuffles, self.randomize_n_moves)
+
+    def name(self):
+        if self.custom_name is not None:
+            return self.custom_name
+
+        name = self.__class__.__name__ + f"[Shuffles: {self.n_shuffles}]"
+        return name
