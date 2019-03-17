@@ -5,7 +5,6 @@ from prototype.experiments.dataset_generator import DatasetGenerator
 from prototype.heuristics.ann_heuristic import ANNHeuristic
 from prototype.board import RandomBoardsGenerator
 import prototype.constants as constants
-import keras
 import os
 
 
