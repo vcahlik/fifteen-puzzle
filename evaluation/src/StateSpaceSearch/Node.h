@@ -2,9 +2,9 @@
 #define FIFTEEN_PUZZLE_SOLVER_NODE_H
 
 
+#include "Board.h"
 #include <memory>
 #include <list>
-#include "Board.h"
 
 class Node {
 public:

@@ -2,8 +2,8 @@
 #define FIFTEEN_PUZZLE_SOLVER_IDASTAR_H
 
 
-#include <Board.h>
-#include <StateSpaceSearch/Heuristics/ManhattanDistance.h>
+#include "Board.h"
+#include "StateSpaceSearch/Heuristics/ManhattanDistance.h"
 
 class IDAStar {
 public:

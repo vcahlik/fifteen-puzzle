@@ -1,7 +1,7 @@
+#include "Board.h"
 #include <iostream>
 #include <iomanip>
 #include <map>
-#include "Board.h"
 
 PebbleIndex::PebbleIndex(int row, int col)
     :   row(row),

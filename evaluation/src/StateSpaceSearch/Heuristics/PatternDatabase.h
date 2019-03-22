@@ -2,11 +2,11 @@
 #define FIFTEEN_PUZZLE_SOLVER_PATTERNDATABASE_H
 
 
+#include "Heuristic.h"
 #include <set>
 #include <list>
 #include <cstddef>
 #include <memory>
-#include "Heuristic.h"
 
 class PatternDatabase : public Heuristic {
 public:

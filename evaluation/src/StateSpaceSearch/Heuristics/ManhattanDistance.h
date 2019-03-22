@@ -2,9 +2,9 @@
 #define FIFTEEN_PUZZLE_SOLVER_MANHATTANDISTANCE_H
 
 
-#include <array>
 #include "Board.h"
 #include "Heuristic.h"
+#include <array>
 
 class ManhattanDistance : public Heuristic {
 public:

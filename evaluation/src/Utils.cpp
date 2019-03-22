@@ -1,9 +1,9 @@
+#include "Utils.h"
 #include <iostream>
 #include <ctime>
 #include <chrono>
 #include <sys/time.h>
 #include <iomanip>
-#include "Utils.h"
 
 void infoMessage(const std::string &msg) {
     std::cout << "[" << currentTimeStr() << "] " << msg << std::endl;
