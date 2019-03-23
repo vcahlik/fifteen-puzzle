@@ -1,5 +1,5 @@
 import numpy as np
-from board import Board
+from prototype.board import Board
 
 
 class Node:

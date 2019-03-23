@@ -1,0 +1,16 @@
+name: fifteen-puzzle
+channels:
+  - pytorch
+dependencies:
+  - python=3.6
+  - numpy
+  - scipy
+  - tensorflow-gpu
+  - keras
+  - pytorch
+  - torchvision
+  - scikit-learn
+  - pandas
+  - matplotlib
+  - jupyter
+  - cython

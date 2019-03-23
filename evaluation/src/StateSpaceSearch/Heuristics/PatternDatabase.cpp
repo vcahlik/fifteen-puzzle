@@ -1,12 +1,12 @@
+#include "StateSpaceSearch/Node.h"
+#include "PatternDatabase.h"
+#include "Utils.h"
+#include "Config.h"
 #include <algorithm>
-#include <StateSpaceSearch/Node.h>
 #include <queue>
-#include <Utils.h>
 #include <sstream>
 #include <unordered_set>
-#include "PatternDatabase.h"
 #include <fstream>
-#include <Config.h>
 
 PatternDatabase::PatternDatabase(int maxPatternLength) {
     auto patternsDefinition = getPatternsDefinition(maxPatternLength);

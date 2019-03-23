@@ -1,6 +1,26 @@
+import os
+import sys
+import fcntl
+import datetime
+import collections
 import heapq
 import itertools
-import collections
+
+
+def debug_print(message, file=sys.stderr):
+    print(f"[{datetime.datetime.now()}] {message}", file=file)
+
+
+def atomic_row_write(file_path, entry):
+    with open(file_path, "a") as file:
+        fcntl.flock(file, fcntl.LOCK_EX)
+        file.write(entry + "\n")
+        fcntl.flock(file, fcntl.LOCK_UN)
+
+
+def timestamped_process_id():
+    pid = os.getpid()
+    return f"{datetime.datetime.now()} PID{pid}"
 
 
 class PriorityQueue:

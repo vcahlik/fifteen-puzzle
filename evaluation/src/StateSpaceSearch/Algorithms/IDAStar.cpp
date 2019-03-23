@@ -1,5 +1,5 @@
-#include <StateSpaceSearch/Node.h>
 #include "IDAStar.h"
+#include "StateSpaceSearch/Node.h"
 #include <stack>
 #include <memory>
 

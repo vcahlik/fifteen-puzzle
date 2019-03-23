@@ -1,8 +1,8 @@
-#include <chrono>
-#include <StateSpaceSearch/Algorithms/IDAStar.h>
-#include <iostream>
-#include <Utils.h>
 #include "Benchmark.h"
+#include "StateSpaceSearch/Algorithms/IDAStar.h"
+#include "Utils.h"
+#include <chrono>
+#include <iostream>
 
 void randomSolveBenchmark(std::list<Heuristic *> heuristics, int shuffleCnt, int runsCnt) {
     for (int i = 0; (runsCnt < 0) || (i < runsCnt); ++i) {

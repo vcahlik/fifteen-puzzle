@@ -1,0 +1,2 @@
+class GoalNotFoundError(RuntimeError):
+    pass

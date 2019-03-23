@@ -2,8 +2,8 @@
 #define FIFTEEN_PUZZLE_SOLVER_BENCHMARK_H
 
 
+#include "StateSpaceSearch/Heuristics/Heuristic.h"
 #include <list>
-#include <StateSpaceSearch/Heuristics/Heuristic.h>
 
 void randomSolveBenchmark(std::list<Heuristic *> heuristics, int shuffleCnt=5000, int runsCnt=-1);
 
