@@ -5,27 +5,44 @@ import glob
 import sys
 
 
-DATASET_NAME = "15-costs"
-SOURCE_DIR = "../../data/datasets-raw/" + DATASET_NAME
-DEST_DIR = "../../data/datasets"
-DEST_FILE = DEST_DIR + "/" + DATASET_NAME + ".csv"
+OUTPUT_FILE_NAME = "solutions-2019-02-07T23:42:31.961-merged.csv"
+SOURCE_DIR = "datasets-raw/2019-02-07T23:42:31.961"
+OUTPUT_DIR = "datasets-output"
+OUTPUT_FILE = os.path.join(OUTPUT_DIR, OUTPUT_FILE_NAME)
 
-if os.path.exists(DEST_FILE):
-    print(f"Error: File {DEST_FILE} already exists.", file=sys.stderr)
-    sys.exit(1)
+if not os.path.exists(OUTPUT_DIR):
+    os.makedirs(OUTPUT_DIR)
+    
+if os.path.exists(OUTPUT_FILE):
+    raise RuntimeError(f"Error: File {OUTPUT_FILE} already exists.")
 
+print("Concat: started.")
+
+file_names = list(glob.glob(SOURCE_DIR + "/*.csv"))
 col_names = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "cost"]
 
-datasets = []
-for file_name in glob.glob(SOURCE_DIR + "/*.csv"):
-    datasets.append(pd.read_csv(file_name, header=None, names=col_names))
+merged = pd.read_csv(file_names[0], header=None, names=col_names)
+for file_name in file_names[1:]:
+    df = pd.read_csv(file_name, header=None, names=col_names)
+    merged = merged.append(df, sort=False)
+    print(f"Concat: appended {df.shape[0]} rows.")
 
-merged = pd.concat(datasets, ignore_index=True)
-n_merged = merged.shape[0]
+print(f"Concat: {merged.shape[0]} total rows.")
+print("Concat: done.")
+
+print("Drop duplicates: started.")
+
+n_total = merged.shape[0]
 merged.drop_duplicates(inplace=True)
-n_duplicates = n_merged - merged.shape[0]
+n_unique = merged.shape[0]
+n_duplicates = n_total - n_unique
 
-merged.to_csv(DEST_FILE, index=False)
+print(f"Drop duplicates: {n_duplicates} dropped, {n_unique} left.")
+print("Drop duplicates: done.")
 
-print(f"Success, written: {merged.shape[0]}, dropped duplicates: {n_duplicates}")
+print("Write to CSV: started.")
 
+merged.to_csv(OUTPUT_FILE, index=False)
+
+print("Write to CSV: done.")
+print(f"Finished.")
