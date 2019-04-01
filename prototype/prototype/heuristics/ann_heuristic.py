@@ -3,9 +3,10 @@ from prototype.heuristics.heuristic import Heuristic
 
 
 class ANNHeuristic(Heuristic):
-    def __init__(self, model_path, additive_constant=0):
+    def __init__(self, model_path, additive_constant=0, label=None):
         self.model_path = model_path
         self.additive_constant = additive_constant
+        self.label = label
 
         self._model = None
 
@@ -24,4 +25,7 @@ class ANNHeuristic(Heuristic):
         return y + float(self.additive_constant)
 
     def name(self):
-        return f"ANN[Const:{self.additive_constant}]"
+        if self.label is not None:
+            return f"ANN[Const:{self.additive_constant};Label:{self.label}]"
+        else:
+            return f"ANN[Const:{self.additive_constant}]"

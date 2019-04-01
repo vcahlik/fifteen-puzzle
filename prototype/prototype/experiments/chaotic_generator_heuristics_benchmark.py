@@ -21,7 +21,7 @@ def create_experiment(output_file_path):
     heuristics.append(pdb)
 
     model_path = os.path.join(constants.PROJECT_ROOT, 'data/keras-1024-1024-512-128-64.h5')
-    heuristics.append(ANNHeuristic(model_path, additive_constant=0))
+    heuristics.append(ANNHeuristic(model_path, additive_constant=0, label=""))
 
     boards_generator = ChaoticShufflingBoardsGenerator(100)
     return Experiment(
