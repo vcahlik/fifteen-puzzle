@@ -83,6 +83,17 @@ class Board:
                 subset.append(position)
         return subset
 
+    # TODO rename
+    def pebble_positions_subset_cpp(self, pebbles):
+        pebble_positions = self.pebble_positions()
+        subset = list()
+        subset.append(pebble_positions[0])  # Empty pebble's position at beginning
+
+        for pebble in pebbles:
+            if pebble in pebbles:
+                subset.append(pebble_positions[pebble])
+        return subset
+
     def pebble_indexes(self):
         return [self.position_to_index(position) for position in self.pebble_positions()]
 

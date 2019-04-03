@@ -1,5 +1,5 @@
 from prototype.heuristics.pattern_database_heuristic import PatternDatabaseHeuristic
-from prototype.experiments.experiment import Experiment
+from prototype.experiments.board_solving_experiment import BoardSolvingExperiment
 from prototype.board import ShufflingBoardsGenerator
 from prototype.graph_search.search_algorithms import AStarSearch
 from prototype.experiments.dataset_generator import DatasetGenerator
@@ -18,7 +18,7 @@ def create_experiment(output_file_path):
     heuristics.append(pdb)
 
     boards_generator = ShufflingBoardsGenerator(10000)
-    return Experiment(
+    return BoardSolvingExperiment(
         algorithms,
         heuristics,
         boards_generator,
