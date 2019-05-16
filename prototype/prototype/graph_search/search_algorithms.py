@@ -20,14 +20,12 @@ class BFS(GraphSearchAlgorithm):
         self.las_vegas_randomization = las_vegas_randomization
 
         self.path = None
-        self.n_expanded = None
 
-    def reset(self):
+    def _reset(self):
         self.path = None
-        self.n_expanded = None
 
     def run(self, init_node):
-        self.reset()
+        self._reset()
         open_nodes = FastLookupQueue()
         open_nodes.push_right(init_node)
         closed_nodes = set()

@@ -3,8 +3,8 @@ from prototype.heuristics.heuristic import Heuristic
 
 
 class ManhattanDistanceHeuristic(Heuristic):
-    def __init__(self):
-        self._solved_indexes = Board().pebble_indexes()[1:]
+    def __init__(self, N):
+        self._solved_indexes = Board(N=N).pebble_indexes()[1:]
 
     def estimate_cost(self, board):
         indexes = board.pebble_indexes()[1:]

@@ -3,6 +3,7 @@ import array
 import numpy as np
 import hashlib
 import random
+import math
 
 
 class Direction(Enum):
@@ -10,6 +11,16 @@ class Direction(Enum):
     DOWN = 4
     LEFT = -1
     RIGHT = 1
+
+    def blank_pos_change(self, N):
+        if self == Direction.UP:
+            return N * -1
+        elif self == Direction.DOWN:
+            return N
+        elif self == Direction.LEFT:
+            return -1
+        else:
+            return 1
 
     def opposite(self):
         if self == Direction.UP:
@@ -23,21 +34,34 @@ class Direction(Enum):
 
 
 class Board:
-    _solved_config = array.array('l', (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0))
-    _solved_blank_pos = 15
+    _solved_config = {
+        2: array.array('l', (1, 2, 3, 0)),
+        3: array.array('l', (1, 2, 3, 4, 5, 6, 7, 8, 0)),
+        4: array.array('l', (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0)),
+        5: array.array('l', (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 0))
+    }
+
+    _solved_blank_pos = {
+        2: 3,
+        3: 8,
+        4: 15,
+        5: 24
+    }
 
     _IGNORED_PEBBLE = -1
 
-    def __init__(self, config=None):
+    def __init__(self, N, config=None):
+        self.N = N
         if config is None:
-            self.config = array.array('l', self._solved_config)
-            self.blank_position = self._solved_blank_pos
+            self.config = array.array('l', self._solved_config[self.N])
+            self.blank_position = self._solved_blank_pos[self.N]
         else:
+            assert N == math.sqrt(len(config))
             self.config = array.array('l', config)
             self.blank_position = self.pebble_positions()[0]
 
     def __str__(self):
-        return str(np.array(self.config).reshape(4, 4))
+        return str(np.array(self.config).reshape(self.N, self.N))
 
     def __eq__(self, other):
         return self.config == other.config
@@ -46,11 +70,11 @@ class Board:
         return int(hashlib.sha1(self.config).hexdigest(), 16)
 
     def is_solved(self):
-        return self.config == self._solved_config
+        return self.config == self._solved_config[self.N]
 
-    @staticmethod
-    def position_to_index(position):
-        return position // 4, position % 4
+    # Returns index_x, index_y
+    def position_to_index(self, position):
+        return position // self.N, position % self.N
 
     def valid_directions(self):
         directions = []
@@ -58,17 +82,17 @@ class Board:
 
         if row_index > 0:
             directions.append(Direction.UP)
-        if row_index < 3:
+        if row_index < self.N - 1:
             directions.append(Direction.DOWN)
         if col_index > 0:
             directions.append(Direction.LEFT)
-        if col_index < 3:
+        if col_index < self.N - 1:
             directions.append(Direction.RIGHT)
 
         return directions
 
     def pebble_positions(self):
-        positions = [None] * 16
+        positions = [None] * len(self.config)
         for position, pebble in enumerate(self.config):
             if pebble != self._IGNORED_PEBBLE:
                 positions[pebble] = position
@@ -98,7 +122,7 @@ class Board:
         return [self.position_to_index(position) for position in self.pebble_positions()]
 
     def move_blank(self, direction):
-        target_position = self.blank_position + direction.value
+        target_position = self.blank_position + direction.blank_pos_change(self.N)
         replaced_pebble = self.config[target_position]
 
         self.config[self.blank_position] = replaced_pebble
@@ -108,12 +132,11 @@ class Board:
         return replaced_pebble
 
     def _count_inverses(self):
-        # Source: https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
-        # TODO: check for 5x5 boards is different!
+        # TODO Source: https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
 
         n_inverses = 0
-        for i in range(0, 16):
-            for j in range(i + 1, 16):
+        for i in range(0, len(self.config)):
+            for j in range(i + 1, len(self.config)):
                 if (i != self.blank_position) \
                         and (j != self.blank_position) \
                         and (self.config[i] > self.config[j]):
@@ -121,23 +144,30 @@ class Board:
         return n_inverses
 
     def is_solvable(self):
+        # TODO Source: https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
+
         n_inverses = self._count_inverses()
-        blank_pos_x = 4 - self.position_to_index(self.blank_position)[0]
+        blank_pos_y_from_bottom = self.N - 1 - self.position_to_index(self.blank_position)[0]
 
+        N_is_odd = self.N % 2
         n_inverses_is_odd = n_inverses % 2
-        blank_pos_x_is_odd = blank_pos_x % 2
+        blank_pos_y_from_bottom_is_odd = (blank_pos_y_from_bottom) % 2
 
-        if n_inverses_is_odd:
-            return bool(not blank_pos_x_is_odd)
+        if N_is_odd:
+            return bool(not n_inverses_is_odd)
         else:
-            return bool(blank_pos_x_is_odd)
+            if blank_pos_y_from_bottom_is_odd:
+                return bool(n_inverses_is_odd)
+            else:
+                return bool(not n_inverses_is_odd)
 
-    def randomize(self):
-        np.random.RandomState().shuffle(self.config)
+    def randomize(self, enforce_solvability=True):
+        np.random.shuffle(self.config)
         self.blank_position = self.pebble_positions()[0]
-        while not self.is_solvable():
-            np.random.shuffle(self.config)
-            self.blank_position = self.pebble_positions()[0]
+        if enforce_solvability:
+            while not self.is_solvable():
+                np.random.shuffle(self.config)
+                self.blank_position = self.pebble_positions()[0]
         return self
 
     def shuffle(self, n_moves_min=10000, randomize_n_moves: bool = True):
@@ -164,12 +194,13 @@ class Board:
         return np.array([np.argwhere(self.config == i)[0] for i in pebbles])
 
     def to_partial(self, pebbles):
+        # TODO some issue here (invalid constructor arguments)
         return PartialBoard(self.get_pebble_indexes(pebbles), self.blank_position)
 
 
 class PartialBoard(Board):
-    def __init__(self, pebbles):
-        super().__init__()
+    def __init__(self, N, pebbles):
+        super().__init__(N=N)
 
         for i, pebble in enumerate(self.config):
             if pebble != 0 and pebble not in pebbles:
@@ -177,13 +208,19 @@ class PartialBoard(Board):
 
 
 class BoardsGenerator:
+    def __init__(self, N):
+        self.N = N
+
     def name(self):
         return self.__class__.__name__
 
 
 class RandomBoardsGenerator(BoardsGenerator):
+    def __init__(self, N):
+        super().__init__(N)
+
     def random_board(self):
-        board = Board()
+        board = Board(N=self.N)
         return board.randomize()
 
     def name(self):
@@ -191,12 +228,13 @@ class RandomBoardsGenerator(BoardsGenerator):
 
 
 class ShufflingBoardsGenerator(BoardsGenerator):
-    def __init__(self, n_shuffles, randomize_n_moves=True):
+    def __init__(self, N, n_shuffles, randomize_n_moves=True):
+        super().__init__(N)
         self.n_shuffles = n_shuffles
         self.randomize_n_moves = randomize_n_moves
 
     def random_board(self):
-        board = Board()
+        board = Board(N=self.N)
         return board.shuffle(self.n_shuffles, self.randomize_n_moves)
 
     def name(self):
@@ -204,11 +242,12 @@ class ShufflingBoardsGenerator(BoardsGenerator):
 
 
 class ChaoticShufflingBoardsGenerator(BoardsGenerator):
-    def __init__(self, n_shuffles_max):
+    def __init__(self, N, n_shuffles_max):
+        super().__init__(N)
         self.n_shuffles_max = n_shuffles_max
 
     def random_board(self):
-        board = Board()
+        board = Board(N=self.N)
         n_shuffles = random.randint(0, self.n_shuffles_max)
         return board.shuffle(n_shuffles, False)
 

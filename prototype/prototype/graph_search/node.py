@@ -27,7 +27,7 @@ class ForwardSearchNode(Node):
         children = []
         for direction in self.board.valid_directions():
             if direction.opposite() != self.last_move_direction:
-                child_board = Board(self.board.config)
+                child_board = Board(N=self.board.N, config=self.board.config)
                 child_board.move_blank(direction)
                 children.append(ForwardSearchNode(child_board, self, direction))
 
