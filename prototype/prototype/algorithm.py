@@ -9,6 +9,10 @@ class ResultType(Enum):
 
 
 class Algorithm:
+    """
+    An algorithm solving the (N^2-1)-puzzle.
+    """
+
     def __init__(self, goal_test):
         self.goal_test = goal_test
         self.results = dict()

@@ -4,6 +4,9 @@ from prototype.utils import FastLookupQueue, PriorityQueue
 from prototype.algorithm import ResultType
 import prototype.exceptions as exceptions
 import time
+from prototype.heuristics.cpp_pdb_heuristic import CppPatternDatabaseHeuristic
+from prototype.heuristics.manhattan_distance_heuristic import ManhattanDistanceHeuristic
+import collections
 
 
 class GraphSearchAlgorithm(Algorithm):
@@ -149,7 +152,10 @@ class IDAStarSearch(GraphSearchAlgorithm):
         self.heuristic = heuristic
         self.las_vegas_randomization = las_vegas_randomization
 
+        self.path = None
+
     def reset(self):
+        self.path = None
         self.reset_results()
 
     def run(self, init_node):
@@ -169,6 +175,8 @@ class IDAStarSearch(GraphSearchAlgorithm):
                 cost_limited_dfs.cost_limit = cost_limited_dfs.cost_limit + 1
                 n_expanded = n_expanded + cost_limited_dfs.results[ResultType.EXPANDED_NODES.name]
                 continue
+
+            self.path = cost_limited_dfs.path
 
             self.results[ResultType.SOLUTION_COST.name] = cost_limited_dfs.cost_limit
             self.results[ResultType.EXPANDED_NODES.name] = n_expanded

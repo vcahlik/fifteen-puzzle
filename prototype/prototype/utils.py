@@ -66,36 +66,25 @@ class PriorityQueue:
 
 
 class FastLookupQueue:
+    # TODO add lookup table
+
     def __init__(self):
         self.deque = collections.deque()
-        self.lookup = set()
 
     def __len__(self):
-        return len(self.lookup)
+        return len(self.deque)
 
     def __contains__(self, item):
-        return item in self.lookup
+        return item in self.deque
 
     def push_right(self, item):
         self.deque.append(item)
-        self.lookup.add(item)
 
     def push_left(self, item):
         self.deque.appendleft(item)
-        self.lookup.add(item)
 
     def pop_left(self):
-        item = self.deque.popleft()
-        try:
-            self.lookup.remove(item)
-        except KeyError:
-            pass
-        return item
+        return self.deque.popleft()
 
     def pop_right(self):
-        item = self.deque.pop()
-        try:
-            self.lookup.remove(item)
-        except KeyError:
-            pass
-        return item
+        return self.deque.pop()

@@ -20,7 +20,7 @@ class ANNHeuristic(Heuristic):
 
     def estimate_cost(self, board):
         x = np.array(board.config)
-        x_encoded = np.eye(16)[x].ravel()
+        x_encoded = np.eye(board.N)[x].ravel()
         y = self.get_model().predict(x_encoded.reshape(1, -1)).item()
         return y + float(self.additive_constant)
 

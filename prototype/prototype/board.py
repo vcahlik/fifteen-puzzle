@@ -7,10 +7,14 @@ import math
 
 
 class Direction(Enum):
-    UP = -4
-    DOWN = 4
-    LEFT = -1
-    RIGHT = 1
+    """
+    A direction in which the blank is moved.
+    """
+
+    UP = 0
+    DOWN = 1
+    LEFT = 2
+    RIGHT = 3
 
     def blank_pos_change(self, N):
         if self == Direction.UP:
@@ -34,6 +38,10 @@ class Direction(Enum):
 
 
 class Board:
+    """
+    A (N^2-1)-puzzle board with pebbles.
+    """
+
     _solved_config = {
         2: array.array('l', (1, 2, 3, 0)),
         3: array.array('l', (1, 2, 3, 4, 5, 6, 7, 8, 0)),
@@ -77,6 +85,11 @@ class Board:
         return position // self.N, position % self.N
 
     def valid_directions(self):
+        """
+        Get directions in which the blank can be moved.
+
+        :return: list of valid directions
+        """
         directions = []
         row_index, col_index = self.position_to_index(self.blank_position)
 
@@ -131,7 +144,7 @@ class Board:
         self.blank_position = target_position
         return replaced_pebble
 
-    def _count_inverses(self):
+    def _count_pebble_inversions(self):
         # TODO Source: https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
 
         n_inverses = 0
@@ -146,7 +159,7 @@ class Board:
     def is_solvable(self):
         # TODO Source: https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
 
-        n_inverses = self._count_inverses()
+        n_inverses = self._count_pebble_inversions()
         blank_pos_y_from_bottom = self.N - 1 - self.position_to_index(self.blank_position)[0]
 
         N_is_odd = self.N % 2

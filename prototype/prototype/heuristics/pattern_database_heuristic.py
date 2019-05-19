@@ -21,6 +21,11 @@ class Subproblem(Heuristic):
         self._db_coefficients = self._calculate_db_coefficients()
         self.db_folder_path = None
 
+    """
+    Size of the subproblem's database in bytes.
+    
+    :return: db size
+    """
     def _db_size(self):
         size = 1
         for n_placements in range(16 - len(self.pebbles), 17):
@@ -148,7 +153,7 @@ _pattern_definitions = {
 
 
 class PatternDatabaseHeuristic(Heuristic):
-    def __init__(self, max_pattern_size=2):
+    def __init__(self, max_pattern_size):
         self.max_pattern_size = max_pattern_size
         self.subproblems = [Subproblem(pebbles) for pebbles in _pattern_definitions[max_pattern_size]]
 
