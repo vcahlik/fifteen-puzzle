@@ -19,7 +19,7 @@ def test_algorithms():
     ida_star = IDAStarSearch(h)
     for i in range(0, 20):
         board = Board(N=4)
-        board.shuffle(30)
+        board.shuffle(25)
         a_star.run(ForwardSearchNode(board))
         ida_star.run(ForwardSearchNode(board))
         assert a_star.results["SOLUTION_COST"] == ida_star.results["SOLUTION_COST"]
