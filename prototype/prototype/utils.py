@@ -65,26 +65,57 @@ class PriorityQueue:
         entry[-1] = self._REMOVED
 
 
-class FastLookupQueue:
-    # TODO add lookup table
+class Multiset:
+    def __init__(self):
+        self.values = {}
 
+    def __len__(self):
+        return len(self.values)
+
+    def __contains__(self, item):
+        return item in self.values.keys()
+
+    def insert(self, item):
+        if item in self.values:
+            self.values[item] = self.values[item] + 1
+        else:
+            self.values[item] = 1
+
+    def remove(self, item):
+        if item in self.values.keys():
+            if self.values[item] > 1:
+                self.values[item] = self.values[item] - 1
+            else:
+                del self.values[item]
+        else:
+            raise KeyError(str(item))
+
+
+class FastLookupQueue:
     def __init__(self):
         self.deque = collections.deque()
+        self.lookup = Multiset()
 
     def __len__(self):
         return len(self.deque)
 
     def __contains__(self, item):
-        return item in self.deque
+        return item in self.lookup
 
     def push_right(self, item):
         self.deque.append(item)
+        self.lookup.insert(item)
 
     def push_left(self, item):
         self.deque.appendleft(item)
+        self.lookup.insert(item)
 
     def pop_left(self):
-        return self.deque.popleft()
+        item = self.deque.popleft()
+        self.lookup.remove(item)
+        return item
 
     def pop_right(self):
-        return self.deque.pop()
+        item = self.deque.pop()
+        self.lookup.remove(item)
+        return item
