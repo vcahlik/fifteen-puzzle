@@ -3,17 +3,15 @@ from prototype.algorithm import Algorithm
 from prototype.utils import FastLookupQueue, PriorityQueue
 from prototype.algorithm import ResultType
 import prototype.exceptions as exceptions
+from prototype.graph_search.node import ForwardSearchNode
 import time
-from prototype.heuristics.cpp_pdb_heuristic import CppPatternDatabaseHeuristic
-from prototype.heuristics.manhattan_distance_heuristic import ManhattanDistanceHeuristic
-import collections
 
 
 class GraphSearchAlgorithm(Algorithm):
     def __init__(self, goal_test=Board.is_solved):
         super().__init__(goal_test)
 
-    def run(self, init_node):
+    def run(self, board):
         pass
 
 
@@ -27,10 +25,10 @@ class BFS(GraphSearchAlgorithm):
     def _reset(self):
         self.path = None
 
-    def run(self, init_node):
+    def run(self, board):
         self._reset()
         open_nodes = FastLookupQueue()
-        open_nodes.push_right(init_node)
+        open_nodes.push_right(ForwardSearchNode(board))
         closed_nodes = set()
 
         start_time = time.time()
@@ -68,10 +66,10 @@ class DFS(GraphSearchAlgorithm):
     def reset(self):
         self.path = None
 
-    def run(self, init_node):
+    def run(self, board):
         self.reset()
         open_nodes = FastLookupQueue()
-        open_nodes.push_right(init_node)
+        open_nodes.push_right(ForwardSearchNode(board))
         n_expanded = 0
 
         start_time = time.time()
@@ -112,13 +110,13 @@ class AStarSearch(GraphSearchAlgorithm):
         self.path = None
         self.reset_results()
 
-    def run(self, init_node):
+    def run(self, board):
         self.reset()
         open_nodes = PriorityQueue()
-        open_nodes.push(init_node, self.heuristic.estimate_cost(init_node.board))
+        open_nodes.push(ForwardSearchNode(board), self.heuristic.estimate_cost(board))
         closed_nodes = set()
 
-        self.results[ResultType.INITIAL_HEURISTIC_PREDICTION.name] = self.heuristic.estimate_cost(init_node.board)
+        self.results[ResultType.INITIAL_HEURISTIC_PREDICTION.name] = self.heuristic.estimate_cost(board)
         start_time = time.time()
 
         while len(open_nodes) > 0:
@@ -158,18 +156,18 @@ class IDAStarSearch(GraphSearchAlgorithm):
         self.path = None
         self.reset_results()
 
-    def run(self, init_node):
+    def run(self, board):
         self.reset()
-        initial_cost_limit = int(self.heuristic.estimate_cost(init_node.board))
+        initial_cost_limit = int(self.heuristic.estimate_cost(board))
         cost_limited_dfs = DFS(self.heuristic, self.goal_test, initial_cost_limit, self.las_vegas_randomization)
         n_expanded = 0
 
-        self.results[ResultType.INITIAL_HEURISTIC_PREDICTION.name] = self.heuristic.estimate_cost(init_node.board)
+        self.results[ResultType.INITIAL_HEURISTIC_PREDICTION.name] = self.heuristic.estimate_cost(board)
         start_time = time.time()
 
         while True:
             try:
-                cost_limited_dfs.run(init_node)
+                cost_limited_dfs.run(board)
                 n_expanded = n_expanded + cost_limited_dfs.results[ResultType.EXPANDED_NODES.name]
             except exceptions.GoalNotFoundError:
                 cost_limited_dfs.cost_limit = cost_limited_dfs.cost_limit + 1

@@ -55,7 +55,7 @@ class BoardSolvingExperiment(Experiment):
 
     def _solve(self, board, algorithm, heuristic):
         algorithm.heuristic = heuristic
-        algorithm.run(ForwardSearchNode(board))
+        algorithm.run(board)
 
         self.print_csv_results_row(algorithm, heuristic)
 

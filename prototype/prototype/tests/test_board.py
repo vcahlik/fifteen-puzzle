@@ -21,7 +21,7 @@ def test_randomize_bfs():
             board = Board(N=size)
             board.randomize(enforce_solvability=True)
             bfs = BFS()
-            bfs.run(ForwardSearchNode(board))
+            bfs.run(board)
     print("success")
 
 
@@ -48,7 +48,7 @@ def test_shuffle_bfs():
             board = Board(N=size)
             board.shuffle(8)
             bfs = BFS()
-            bfs.run(ForwardSearchNode(board))
+            bfs.run(board)
     print("success")
 
 
@@ -59,7 +59,7 @@ def test_pdb_heuristic():
     for i in range(0, 10):
         board = Board(N=4)
         board.shuffle(30)
-        search.run(ForwardSearchNode(board))
+        search.run(board)
     print("success")
 
 
@@ -70,7 +70,7 @@ def test_cpp_pdb_heuristic():
     for i in range(0, 10):
         board = Board(N=4)
         board.shuffle(30)
-        search.run(ForwardSearchNode(board))
+        search.run(board)
     print("success")
 
 

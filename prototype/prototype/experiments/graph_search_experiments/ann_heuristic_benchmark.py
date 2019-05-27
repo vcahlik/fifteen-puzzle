@@ -1,4 +1,3 @@
-from prototype.heuristics.pattern_database_heuristic import PatternDatabaseHeuristic
 from prototype.heuristics.cpp_pdb_heuristic import CppPatternDatabaseHeuristic
 from prototype.experiments.board_solving_experiment import BoardSolvingExperiment
 from prototype.graph_search.search_algorithms import AStarSearch
