@@ -90,6 +90,13 @@ class Multiset:
         else:
             raise KeyError(str(item))
 
+    def get(self, item):
+        for key in self.values.keys():
+            if key == item:
+                return key
+        else:
+            raise KeyError(str(item))
+
 
 class FastLookupQueue:
     def __init__(self):
@@ -101,6 +108,9 @@ class FastLookupQueue:
 
     def __contains__(self, item):
         return item in self.lookup
+
+    def get(self, item):
+        return self.lookup.get(item)
 
     def push_right(self, item):
         self.deque.append(item)
