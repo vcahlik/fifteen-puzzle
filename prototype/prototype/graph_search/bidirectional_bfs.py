@@ -7,7 +7,7 @@ from prototype.graph_search.search_algorithms import GraphSearchAlgorithm
 import time
 
 
-class _GoalFound(RuntimeError):
+class _GoalFoundSignal(Exception):
     pass
 
 
@@ -20,7 +20,8 @@ class BidirectionalBFS(GraphSearchAlgorithm):
         self.start_time = None
         self.open_nodes_forward = None
         self.open_nodes_backward = None
-        self.closed_nodes = None
+        self.closed_nodes_forward = None
+        self.closed_nodes_backward = None
         self.init_board = None
 
     def _reset(self):
@@ -28,20 +29,22 @@ class BidirectionalBFS(GraphSearchAlgorithm):
         self.start_time = None
         self.open_nodes_forward = FastLookupQueue()
         self.open_nodes_backward = FastLookupQueue()
-        self.closed_nodes = set()
+        self.closed_nodes_forward = set()
+        self.closed_nodes_backward = set()
 
     def run(self, board):
         self._reset()
         self.init_board = board
         self.start_time = time.time()
         self.open_nodes_forward.push_right(ForwardSearchNode(board))
-        self.open_nodes_backward.push_right(BackwardSearchNode(Board(board.N)))
+        goal_board = Board(board.N)
+        self.open_nodes_backward.push_right(BackwardSearchNode(goal_board))
 
         try:
             while len(self.open_nodes_forward) > 0 and len(self.open_nodes_backward) > 0:
                 self._forward_step()
                 self._backward_step()
-        except _GoalFound:
+        except _GoalFoundSignal:
             return
 
         raise exceptions.GoalNotFoundError()
@@ -56,9 +59,9 @@ class BidirectionalBFS(GraphSearchAlgorithm):
             self._finalize(path=node.path() + backward_node.path()[1:])
 
         for child in node.children(shuffle=self.las_vegas_randomization):
-            if (child not in self.open_nodes_forward) and (child not in self.closed_nodes):
+            if (child not in self.open_nodes_forward) and (child not in self.closed_nodes_forward):
                 self.open_nodes_forward.push_right(child)
-        self.closed_nodes.add(node)
+        self.closed_nodes_forward.add(node)
 
     def _backward_step(self):
         node = self.open_nodes_backward.pop_left()
@@ -70,16 +73,18 @@ class BidirectionalBFS(GraphSearchAlgorithm):
             self._finalize(path=forward_node.path() + node.path()[1:])
 
         for child in node.children(shuffle=self.las_vegas_randomization):
-            if (child not in self.open_nodes_backward) and (child not in self.closed_nodes):
+            if (child not in self.open_nodes_backward) and (child not in self.closed_nodes_backward):
                 self.open_nodes_backward.push_right(child)
-        self.closed_nodes.add(node)
+        self.closed_nodes_backward.add(node)
 
     def _finalize(self, path):
+        n_expanded = len(self.closed_nodes_forward) + len(self.closed_nodes_backward) + 1
+
         self.path = path
         self.results[ResultType.SOLUTION_COST.name] = len(self.path) - 1
-        self.results[ResultType.EXPANDED_NODES.name] = len(self.closed_nodes) + 1
+        self.results[ResultType.EXPANDED_NODES.name] = n_expanded
         self.results[ResultType.RUN_TIME.name] = time.time() - self.start_time
-        raise _GoalFound()
+        raise _GoalFoundSignal()
 
     def name(self):
         return "BiDirBFS"

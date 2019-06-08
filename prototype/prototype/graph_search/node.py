@@ -62,7 +62,7 @@ class BackwardSearchNode(Node):
             if direction.opposite() != self.last_move_direction:
                 child_board = Board(N=self.board.N, config=self.board.config)
                 child_board.move_blank(direction)
-                children.append(ForwardSearchNode(child_board, self, direction))
+                children.append(BackwardSearchNode(child_board, self, direction))
 
         if len(children) > 1 and shuffle:
             np.random.shuffle(children)
@@ -73,7 +73,11 @@ class BackwardSearchNode(Node):
         curr_node = self
 
         while curr_node is not None:
-            path.append((curr_node.board, curr_node.last_move_direction))
+            last_move_direction = None
+            if curr_node.last_move_direction is not None:
+                last_move_direction = curr_node.last_move_direction.opposite()
+
+            path.append((curr_node.board, last_move_direction))
             curr_node = curr_node.parent
 
-        return list(reversed(path))
+        return list(path)
