@@ -14,3 +14,6 @@ def test_bidirectional_bfs():
 
         assert bfs.results["SOLUTION_COST"] == bidirectional_bfs.results["SOLUTION_COST"]
     print("success")
+
+
+# test_bidirectional_bfs()

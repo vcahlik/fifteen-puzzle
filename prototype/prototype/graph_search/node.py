@@ -40,7 +40,7 @@ class ForwardSearchNode(Node):
         curr_node = self
 
         while curr_node is not None:
-            path.append((curr_node.board, curr_node.last_move_direction))
+            path.append(curr_node.board)
             curr_node = curr_node.parent
 
         return list(reversed(path))
@@ -73,11 +73,7 @@ class BackwardSearchNode(Node):
         curr_node = self
 
         while curr_node is not None:
-            last_move_direction = None
-            if curr_node.last_move_direction is not None:
-                last_move_direction = curr_node.last_move_direction.opposite()
-
-            path.append((curr_node.board, last_move_direction))
+            path.append(curr_node.board)
             curr_node = curr_node.parent
 
         return list(path)
