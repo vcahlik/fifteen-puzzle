@@ -2,7 +2,7 @@ from prototype.board import Board
 from prototype.algorithm import Algorithm
 from prototype.utils import FastLookupQueue, PriorityQueue
 from prototype.algorithm import ResultType
-import prototype.exceptions as exceptions
+from prototype.exceptions import GoalNotFoundError
 from prototype.graph_search.node import ForwardSearchNode, BackwardSearchNode
 import time
 
@@ -48,7 +48,7 @@ class BFS(GraphSearchAlgorithm):
                     open_nodes.push_right(child)
             closed_nodes.add(node)
 
-        raise exceptions.GoalNotFoundError()
+        raise GoalNotFoundError()
 
     def name(self):
         return "BFS"
@@ -92,7 +92,7 @@ class DFS(GraphSearchAlgorithm):
 
         self.results[ResultType.EXPANDED_NODES.name] = n_expanded
         self.results[ResultType.RUN_TIME.name] = time.time() - start_time
-        raise exceptions.GoalNotFoundError()
+        raise GoalNotFoundError()
 
     def name(self):
         return f"DFS"
@@ -138,7 +138,7 @@ class AStarSearch(GraphSearchAlgorithm):
                     open_nodes.push(child, child_estimated_cost)
                     closed_nodes.add(node)
 
-        raise exceptions.GoalNotFoundError()
+        raise GoalNotFoundError()
 
     def name(self):
         return "A*"
@@ -186,7 +186,7 @@ class BackwardAStarSearch(GraphSearchAlgorithm):
                     open_nodes.push(child, child_estimated_cost)
                     closed_nodes.add(node)
 
-        raise exceptions.GoalNotFoundError()
+        raise GoalNotFoundError()
 
     def name(self):
         return "BackwardA*"
@@ -217,7 +217,7 @@ class IDAStarSearch(GraphSearchAlgorithm):
             try:
                 cost_limited_dfs.run(board)
                 n_expanded = n_expanded + cost_limited_dfs.results[ResultType.EXPANDED_NODES.name]
-            except exceptions.GoalNotFoundError:
+            except GoalNotFoundError:
                 cost_limited_dfs.cost_limit = cost_limited_dfs.cost_limit + 1
                 n_expanded = n_expanded + cost_limited_dfs.results[ResultType.EXPANDED_NODES.name]
                 continue

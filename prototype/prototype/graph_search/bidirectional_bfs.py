@@ -1,7 +1,7 @@
 from prototype.board import Board
 from prototype.utils import FastLookupQueue
 from prototype.algorithm import ResultType
-import prototype.exceptions as exceptions
+from prototype.exceptions import GoalNotFoundError
 from prototype.graph_search.node import ForwardSearchNode, BackwardSearchNode
 from prototype.graph_search.search_algorithms import GraphSearchAlgorithm
 import time
@@ -47,7 +47,7 @@ class BidirectionalBFS(GraphSearchAlgorithm):
         except _GoalFoundSignal:
             return
 
-        raise exceptions.GoalNotFoundError()
+        raise GoalNotFoundError()
 
     def _forward_step(self):
         node = self.open_nodes_forward.pop_left()

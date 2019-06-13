@@ -21,6 +21,8 @@ class Path:
         self.boards.append(board)
 
     def concatenate(self, other):
+        if not self.boards[-1] == other.boards[0]:
+            raise RuntimeError("Can't concatenate these boards")
         self.boards = self.boards + other.boards[1:]
         return self
 
