@@ -13,6 +13,8 @@ def test_bidirectional_bfs():
         bidirectional_bfs.run(board)
 
         assert bfs.results["SOLUTION_COST"] == bidirectional_bfs.results["SOLUTION_COST"]
+        bfs.path.check_validity()
+        bidirectional_bfs.path.check_validity()
     print("success")
 
 

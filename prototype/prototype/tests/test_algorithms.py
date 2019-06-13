@@ -13,6 +13,8 @@ def test_algorithms():
         a_star.run(board)
         ida_star.run(board)
         assert a_star.results["SOLUTION_COST"] == ida_star.results["SOLUTION_COST"]
+        a_star.path.check_validity()
+        ida_star.path.check_validity()
     print("success")
     
     
@@ -27,6 +29,8 @@ def test_backward_a_star():
         a_star.run(board)
         backward_a_star.run(board)
         assert a_star.results["SOLUTION_COST"] == backward_a_star.results["SOLUTION_COST"]
+        a_star.path.check_validity()
+        backward_a_star.path.check_validity()
     print("success")
 
 # test_algorithms()

@@ -56,7 +56,7 @@ class BidirectionalBFS(GraphSearchAlgorithm):
             return
         elif node in self.open_nodes_backward:
             backward_node = self.open_nodes_backward.get(node)
-            self._finalize(path=node.path() + backward_node.path()[1:])
+            self._finalize(path=node.path().concatenate(backward_node.path()))
 
         for child in node.children(shuffle=self.las_vegas_randomization):
             if (child not in self.open_nodes_forward) and (child not in self.closed_nodes_forward):
@@ -70,7 +70,7 @@ class BidirectionalBFS(GraphSearchAlgorithm):
             return
         elif node in self.open_nodes_forward:
             forward_node = self.open_nodes_forward.get(node)
-            self._finalize(path=forward_node.path() + node.path()[1:])
+            self._finalize(path=forward_node.path().concatenate(node.path()))
 
         for child in node.children(shuffle=self.las_vegas_randomization):
             if (child not in self.open_nodes_backward) and (child not in self.closed_nodes_backward):

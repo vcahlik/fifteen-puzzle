@@ -1,5 +1,6 @@
 import numpy as np
 from prototype.board import Board
+from prototype.path import Path
 
 
 class Node:
@@ -36,14 +37,14 @@ class ForwardSearchNode(Node):
         return children
 
     def path(self):
-        path = []
+        path = Path()
         curr_node = self
 
         while curr_node is not None:
             path.append(curr_node.board)
             curr_node = curr_node.parent
 
-        return list(reversed(path))
+        return reversed(path)
 
 
 class BackwardSearchNode(Node):
@@ -69,11 +70,11 @@ class BackwardSearchNode(Node):
         return children
 
     def path(self):
-        path = []
+        path = Path()
         curr_node = self
 
         while curr_node is not None:
             path.append(curr_node.board)
             curr_node = curr_node.parent
 
-        return list(path)
+        return path
