@@ -136,7 +136,7 @@ class AStarSearch(GraphSearchAlgorithm):
                 child_estimated_cost = child.cost + self.heuristic.estimate_cost(child.board)
                 if curr_estimated_cost is None or curr_estimated_cost > child_estimated_cost:
                     open_nodes.push(child, child_estimated_cost)
-                    closed_nodes.add(node)
+            closed_nodes.add(node)
 
         raise GoalNotFoundError()
 
@@ -184,7 +184,7 @@ class BackwardAStarSearch(GraphSearchAlgorithm):
                 child_estimated_cost = child.cost + self.heuristic.estimate_cost(child.board)
                 if curr_estimated_cost is None or curr_estimated_cost > child_estimated_cost:
                     open_nodes.push(child, child_estimated_cost)
-                    closed_nodes.add(node)
+            closed_nodes.add(node)
 
         raise GoalNotFoundError()
 
