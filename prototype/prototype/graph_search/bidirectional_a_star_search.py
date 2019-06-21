@@ -58,7 +58,6 @@ class BidirectionalAStarSearch(GraphSearchAlgorithm):
         node = self.open_nodes_forward.pop()
         if node.board.is_solved():
             self._finalize(path=node.path())
-            return
         elif node in self.closed_nodes_backward:
             # TODO
             backward_node = self.closed_nodes_backward.get(node)
@@ -77,7 +76,6 @@ class BidirectionalAStarSearch(GraphSearchAlgorithm):
         node = self.open_nodes_backward.pop()
         if node.board == self.init_board:
             self._finalize(path=node.path())
-            return
         elif node in self.closed_nodes_forward:
             # TODO
             forward_node = self.closed_nodes_forward.get(node)

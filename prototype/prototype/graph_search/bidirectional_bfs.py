@@ -53,7 +53,6 @@ class BidirectionalBFS(GraphSearchAlgorithm):
         node = self.open_nodes_forward.pop_left()
         if node.board.is_solved():
             self._finalize(path=node.path())
-            return
         elif node in self.open_nodes_backward:
             backward_node = self.open_nodes_backward.get(node)
             self._finalize(path=node.path().concatenate(backward_node.path()))
@@ -67,7 +66,6 @@ class BidirectionalBFS(GraphSearchAlgorithm):
         node = self.open_nodes_backward.pop_left()
         if node.board == self.init_board:
             self._finalize(path=node.path())
-            return
         elif node in self.open_nodes_forward:
             forward_node = self.open_nodes_forward.get(node)
             self._finalize(path=forward_node.path().concatenate(node.path()))
