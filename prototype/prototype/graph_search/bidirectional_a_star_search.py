@@ -59,8 +59,14 @@ class BidirectionalAStarSearch(GraphSearchAlgorithm):
         if node.board.is_solved():
             self._finalize(path=node.path())
         elif node in self.closed_nodes_backward:
-            # TODO
-            backward_node = self.closed_nodes_backward.get(node)
+            # TODO make more efficient
+            backward_node = None
+            for n in self.closed_nodes_backward:
+                if n == node:
+                    backward_node = n
+            if backward_node is None:
+                raise RuntimeError("bckwd node is none")
+
             self._finalize(path=node.path().concatenate(backward_node.path()))
 
         for child in node.children(shuffle=self.las_vegas_randomization):
@@ -77,8 +83,14 @@ class BidirectionalAStarSearch(GraphSearchAlgorithm):
         if node.board == self.init_board:
             self._finalize(path=node.path())
         elif node in self.closed_nodes_forward:
-            # TODO
-            forward_node = self.closed_nodes_forward.get(node)
+            # TODO make more efficient
+            forward_node = None
+            for n in self.closed_nodes_forward:
+                if n == node:
+                    forward_node = n
+            if forward_node is None:
+                raise RuntimeError("fwd node is none")
+
             self._finalize(path=forward_node.path().concatenate(node.path()))
 
         for child in node.children(shuffle=self.las_vegas_randomization):
