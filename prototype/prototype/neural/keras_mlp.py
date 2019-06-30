@@ -18,9 +18,9 @@ class KerasMLP:
             learning_rate=0.001,
             dropout_ratio=0.2,
             activation='elu',
+            loss='mean_squared_error',
             kernel_initializer='he_normal',
             batch_normalize=True):
-
         model = keras.models.Sequential()
         model.add(keras.layers.Dense(layer_sizes[0],
                                      input_shape=(256,),
@@ -39,6 +39,7 @@ class KerasMLP:
             model.add(keras.layers.Dropout(dropout_ratio))
 
         model.add(keras.layers.Dense(1, kernel_initializer=kernel_initializer))
-        model.compile(loss='mean_squared_error',
-                      optimizer=keras.optimizers.Adam(lr=learning_rate))
+        model.compile(loss=loss,
+                      optimizer=keras.optimizers.Adam(lr=learning_rate),
+                      metrics=['accuracy'])
         return model
