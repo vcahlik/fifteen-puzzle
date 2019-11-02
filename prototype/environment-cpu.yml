@@ -2,14 +2,12 @@ name: fifteen-puzzle
 channels:
   - pytorch
 dependencies:
-  - python=3.6
+  - python
   - numpy
   - scipy
   - pytest
-  - tensorflow-gpu
+  - tensorflow
   - keras
-  - pytorch
-  - torchvision
   - scikit-learn
   - pandas
   - matplotlib
