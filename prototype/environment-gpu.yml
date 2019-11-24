@@ -1,14 +1,11 @@
 name: fifteen-puzzle-gpu
-channels:
-  - pytorch
 dependencies:
-  - python=3.6
+  - python
   - numpy
   - scipy
   - pytest
   - tensorflow-gpu
   - keras
-  - cudatoolkit=9.0
   - scikit-learn
   - pandas
   - matplotlib

@@ -1,6 +1,4 @@
 name: fifteen-puzzle
-channels:
-  - pytorch
 dependencies:
   - python
   - numpy
