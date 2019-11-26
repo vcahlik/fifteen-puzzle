@@ -153,12 +153,13 @@ _pattern_definitions = {
 
 
 class PatternDatabaseHeuristic(Heuristic):
-    def __init__(self, max_pattern_size):
+    def __init__(self, max_pattern_size, weight=1):
         self.max_pattern_size = max_pattern_size
         self.subproblems = [Subproblem(pebbles) for pebbles in _pattern_definitions[max_pattern_size]]
+        self.weight = weight
 
     def estimate_cost(self, board):
-        return sum([subproblem.cost(board.pebble_positions_subset(subproblem.pebbles)) for subproblem in self.subproblems])
+        return self.weight * sum([subproblem.cost(board.pebble_positions_subset(subproblem.pebbles)) for subproblem in self.subproblems])
 
     def _default_folder(self):
         subproblem_lengths = [len(subproblem.pebbles) for subproblem in self.subproblems]
@@ -203,4 +204,7 @@ class PatternDatabaseHeuristic(Heuristic):
         return subproblem
 
     def name(self):
-        return f"PDB[Pat:{self.max_pattern_size}]"
+        if self.weight == 1:
+            return f"PDB[Pat:{self.max_pattern_size}]"
+        else:
+            return f"PDB[Pat:{self.max_pattern_size};W:{self.weight}]"
