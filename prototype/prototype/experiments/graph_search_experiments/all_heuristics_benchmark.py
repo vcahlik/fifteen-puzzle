@@ -48,7 +48,7 @@ def create_experiment(output_file_path):
     heuristics.append(ANNHeuristic(model_path, "AMSE0.4", asymmetric_mean_squared_error_04))
 
     # boards_generator = RandomBoardsGenerator(4)
-    boards_generator = ShufflingBoardsGenerator(4, 40)
+    boards_generator = RandomBoardsGenerator(4)
     return BoardSolvingExperiment(
         algorithms,
         heuristics,
