@@ -114,12 +114,13 @@ _pattern_definitions = {
 
 
 class CppPatternDatabaseHeuristic(Heuristic):
-    def __init__(self, max_pattern_size=2):
+    def __init__(self, max_pattern_size=2, weight=1):
         self.max_pattern_size = max_pattern_size
         self.subproblems = [CppSubproblemPatternDatabase(pebbles) for pebbles in _pattern_definitions[max_pattern_size]]
+        self.weight = weight
 
     def estimate_cost(self, board):
-        return sum([subproblem.cost(board.pebble_positions_subset_cpp(subproblem.pebbles)) for subproblem in self.subproblems])
+        return self.weight * sum([subproblem.cost(board.pebble_positions_subset_cpp(subproblem.pebbles)) for subproblem in self.subproblems])
 
     def load_db(self):
         debug_print("Database loading from disk.")
@@ -130,4 +131,7 @@ class CppPatternDatabaseHeuristic(Heuristic):
         debug_print("Database loaded.")
 
     def name(self):
-        return f"PDB[Import;Pat:{self.max_pattern_size}]"
+        if self.weight == 1:
+            return f"PDB[Pat:{self.max_pattern_size}]"
+        else:
+            return f"PDB[Pat:{self.max_pattern_size};W:{self.weight}]"

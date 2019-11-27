@@ -3,9 +3,10 @@ from prototype.heuristics.heuristic import Heuristic
 
 
 class ANNHeuristic(Heuristic):
-    def __init__(self, model_path, label=None):
+    def __init__(self, model_path, label=None, custom_loss=None):
         self.model_path = model_path
         self.label = label
+        self.custom_loss = custom_loss
 
         self._model = None
 
@@ -13,7 +14,11 @@ class ANNHeuristic(Heuristic):
         import tensorflow.keras  # Must be loaded in the worker process!
 
         if self._model is None:
-            self._model = tensorflow.keras.models.load_model(self.model_path)
+            if self.custom_loss is not None:
+                self._model = tensorflow.keras.models.load_model(self.model_path,
+                                                                 custom_objects={self.custom_loss.__name__: self.custom_loss})
+            else:
+                self._model = tensorflow.keras.models.load_model(self.model_path)
 
         return self._model
 
