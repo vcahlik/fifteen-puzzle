@@ -7,6 +7,7 @@ from prototype.board import RandomBoardsGenerator, ShufflingBoardsGenerator
 from tensorflow.keras import backend as K
 import prototype.constants as constants
 import os
+import keras
 
 
 def create_experiment(output_file_path):
@@ -15,6 +16,10 @@ def create_experiment(output_file_path):
     algorithms.append(AStarSearch())
 
     heuristics = list()
+
+    ############################################
+    # An admissible heuristic should be first! #
+    ############################################
 
     pdb = CppPatternDatabaseHeuristic(8)
     pdb.load_db()
@@ -47,13 +52,13 @@ def create_experiment(output_file_path):
     model_path = os.path.join(constants.PROJECT_ROOT, 'data/neural-networks/keras-1024-1024-512-128-64-amse04.h5')
     heuristics.append(ANNHeuristic(model_path, "AMSE0.4", asymmetric_mean_squared_error_04))
 
-    # boards_generator = RandomBoardsGenerator(4)
     boards_generator = RandomBoardsGenerator(4)
     return BoardSolvingExperiment(
         algorithms,
         heuristics,
         boards_generator,
-        output_file_path=output_file_path)
+        output_file_path=output_file_path,
+        include_optimal_solver=True)
 
 
 def process_entry_point(**kwargs):

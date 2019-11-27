@@ -3,6 +3,7 @@ from prototype.utils import debug_print, atomic_row_write, timestamped_process_i
 from prototype.graph_search.node import ForwardSearchNode
 from prototype.algorithm import Algorithm
 from prototype.experiments.experiment import Experiment
+from prototype.graph_search.search_algorithms import IDAStarSearch
 
 
 class BoardSolvingExperiment(Experiment):
@@ -11,11 +12,13 @@ class BoardSolvingExperiment(Experiment):
                  heuristics: list,
                  boards_generator,
                  n_runs: int = -1,
-                 output_file_path=None):
+                 output_file_path=None,
+                 include_optimal_solver=False):
         super().__init__(n_runs, output_file_path)
         self.algorithms = algorithms
         self.heuristics = heuristics
         self.boards_generator = boards_generator
+        self.include_optimal_solver = include_optimal_solver
 
         self.board_no = 0
 
@@ -61,10 +64,15 @@ class BoardSolvingExperiment(Experiment):
 
     def start(self):
         try:
+            ida_star = IDAStarSearch()
+            admissible_h = self.heuristics[0]  # The first heuristic should be admissible!
             while True:
                 self.board_no = self.board_no + 1
 
                 board = self.boards_generator.random_board()
+
+                if self.include_optimal_solver:
+                    self._solve(board, ida_star, admissible_h)
 
                 for algorithm in self.algorithms:
                     for heuristic in self.heuristics:
