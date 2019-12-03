@@ -114,12 +114,16 @@ _pattern_definitions = {
 
 
 class CppPatternDatabaseHeuristic(Heuristic):
-    def __init__(self, max_pattern_size=2, weight=1):
+    def __init__(self, max_pattern_size=2, weight=1, callback=None):
         self.max_pattern_size = max_pattern_size
         self.subproblems = [CppSubproblemPatternDatabase(pebbles) for pebbles in _pattern_definitions[max_pattern_size]]
         self.weight = weight
+        self.callback = callback
 
     def estimate_cost(self, board):
+        if self.callback is not None:
+            self.callback(board)
+
         return self.weight * sum([subproblem.cost(board.pebble_positions_subset_cpp(subproblem.pebbles)) for subproblem in self.subproblems])
 
     def load_db(self):
