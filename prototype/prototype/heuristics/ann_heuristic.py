@@ -3,10 +3,11 @@ from prototype.heuristics.heuristic import Heuristic
 
 
 class ANNHeuristic(Heuristic):
-    def __init__(self, model_path, label=None, custom_loss=None):
+    def __init__(self, model_path, label=None, custom_loss=None, callback=None):
         self.model_path = model_path
         self.label = label
         self.custom_loss = custom_loss
+        self.callback = callback
 
         self._model = None
 
@@ -23,6 +24,9 @@ class ANNHeuristic(Heuristic):
         return self._model
 
     def estimate_cost(self, board):
+        if self.callback is not None:
+            self.callback(board)
+
         x = np.array(board.config)
         x_encoded = np.eye(board.N**2)[x].ravel()
         y = self.get_model().predict(x_encoded.reshape(1, -1)).item()
