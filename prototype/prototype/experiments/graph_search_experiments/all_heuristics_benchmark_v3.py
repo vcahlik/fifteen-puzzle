@@ -33,6 +33,10 @@ def create_experiment(output_file_path):
     pdb3.load_db()
     heuristics.append(pdb3)
 
+    pdb4 = CppPatternDatabaseHeuristic(8, weight=1.3)
+    pdb4.load_db()
+    heuristics.append(pdb4)
+
     model_path = os.path.join(constants.PROJECT_ROOT, 'data/neural-networks/v3/keras-1024-1024-512-128-64-v3.h5')
     heuristics.append(ANNHeuristic(model_path, label="MSE"))
 
