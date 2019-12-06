@@ -25,15 +25,15 @@ def create_experiment(output_file_path):
     pdb.load_db()
     heuristics.append(pdb)
 
-    pdb2 = CppPatternDatabaseHeuristic(8, weight=1.1)
+    pdb2 = CppPatternDatabaseHeuristic(8, weight=1.15)
     pdb2.load_db()
     heuristics.append(pdb2)
 
-    pdb3 = CppPatternDatabaseHeuristic(8, weight=1.2)
+    pdb3 = CppPatternDatabaseHeuristic(8, weight=1.3)
     pdb3.load_db()
     heuristics.append(pdb3)
 
-    pdb4 = CppPatternDatabaseHeuristic(8, weight=1.3)
+    pdb4 = CppPatternDatabaseHeuristic(8, weight=1.45)
     pdb4.load_db()
     heuristics.append(pdb4)
 
