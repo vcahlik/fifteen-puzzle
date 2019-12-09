@@ -43,11 +43,29 @@ def create_experiment(output_file_path):
     model_path = os.path.join(constants.PROJECT_ROOT, 'data/neural-networks/v3/keras-2752-v3.h5')
     heuristics.append(ANNHeuristic(model_path, label="MSE1layer"))
 
+    def asymmetric_mean_squared_error_02(y_true, y_pred):
+        return K.mean(K.square(y_pred - y_true) * K.square(K.sign(y_pred - y_true) + 0.2), axis=-1)
+
+    model_path = os.path.join(constants.PROJECT_ROOT, 'data/neural-networks/v3/keras-1024-1024-512-128-64-v3-amse02.h5')
+    heuristics.append(ANNHeuristic(model_path, "AMSE0.2", asymmetric_mean_squared_error_02))
+
     def asymmetric_mean_squared_error_04(y_true, y_pred):
         return K.mean(K.square(y_pred - y_true) * K.square(K.sign(y_pred - y_true) + 0.4), axis=-1)
 
     model_path = os.path.join(constants.PROJECT_ROOT, 'data/neural-networks/v3/keras-1024-1024-512-128-64-v3-amse04.h5')
     heuristics.append(ANNHeuristic(model_path, "AMSE0.4", asymmetric_mean_squared_error_04))
+
+    def asymmetric_mean_squared_error_06(y_true, y_pred):
+        return K.mean(K.square(y_pred - y_true) * K.square(K.sign(y_pred - y_true) + 0.6), axis=-1)
+
+    model_path = os.path.join(constants.PROJECT_ROOT, 'data/neural-networks/v3/keras-1024-1024-512-128-64-v3-amse06.h5')
+    heuristics.append(ANNHeuristic(model_path, "AMSE0.6", asymmetric_mean_squared_error_06))
+
+    def asymmetric_mean_squared_error_08(y_true, y_pred):
+        return K.mean(K.square(y_pred - y_true) * K.square(K.sign(y_pred - y_true) + 0.8), axis=-1)
+
+    model_path = os.path.join(constants.PROJECT_ROOT, 'data/neural-networks/v3/keras-1024-1024-512-128-64-v3-amse08.h5')
+    heuristics.append(ANNHeuristic(model_path, "AMSE0.8", asymmetric_mean_squared_error_08))
 
     boards_generator = RandomBoardsGenerator(4)
     return BoardSolvingExperiment(
@@ -64,7 +82,7 @@ def process_entry_point(**kwargs):
 
 
 if __name__ == "__main__":
-    output_file_path = constants.PROJECT_ROOT + "/data/experiments/all-heuristics-benchmark-v3.csv"
+    output_file_path = constants.PROJECT_ROOT + "/data/experiments/all-heuristics-benchmark-v3-multi.csv"
     kwargs = {"output_file_path": output_file_path}
 
     dataset_generator = DatasetGenerator(process_entry_point, kwargs, output_file_path, None)
