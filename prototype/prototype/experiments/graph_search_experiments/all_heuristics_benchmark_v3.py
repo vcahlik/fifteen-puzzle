@@ -13,7 +13,7 @@ import keras
 def create_experiment(output_file_path):
     algorithms = list()
     # algorithms.append(AStarSearch())
-    algorithms.append(AStarSearch())
+    algorithms.append(IDAStarSearch())
 
     heuristics = list()
 
