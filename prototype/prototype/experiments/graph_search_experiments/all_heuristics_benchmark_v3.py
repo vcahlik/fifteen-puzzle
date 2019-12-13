@@ -58,7 +58,7 @@ def create_experiment(output_file_path):
         heuristics,
         boards_generator,
         output_file_path=output_file_path,
-        include_optimal_solver=True)
+        include_optimal_solver=False)
 
 
 def process_entry_point(**kwargs):
