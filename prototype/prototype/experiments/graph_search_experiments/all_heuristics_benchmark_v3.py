@@ -25,47 +25,32 @@ def create_experiment(output_file_path):
     pdb.load_db()
     heuristics.append(pdb)
 
-    pdb2 = CppPatternDatabaseHeuristic(8, weight=1.15)
-    pdb2.load_db()
-    heuristics.append(pdb2)
-
-    pdb3 = CppPatternDatabaseHeuristic(8, weight=1.3)
-    pdb3.load_db()
-    heuristics.append(pdb3)
-
-    pdb4 = CppPatternDatabaseHeuristic(8, weight=1.45)
-    pdb4.load_db()
-    heuristics.append(pdb4)
+    # pdb2 = CppPatternDatabaseHeuristic(8, weight=1.15)
+    # pdb2.load_db()
+    # heuristics.append(pdb2)
+    #
+    # pdb3 = CppPatternDatabaseHeuristic(8, weight=1.3)
+    # pdb3.load_db()
+    # heuristics.append(pdb3)
+    #
+    # pdb4 = CppPatternDatabaseHeuristic(8, weight=1.45)
+    # pdb4.load_db()
+    # heuristics.append(pdb4)
 
     model_path = os.path.join(constants.PROJECT_ROOT, 'data/neural-networks/v3/keras-1024-1024-512-128-64-v3.h5')
     heuristics.append(ANNHeuristic(model_path, label="MSE"))
 
-    model_path = os.path.join(constants.PROJECT_ROOT, 'data/neural-networks/v3/keras-2752-v3.h5')
-    heuristics.append(ANNHeuristic(model_path, label="MSE1layer"))
+    # model_path = os.path.join(constants.PROJECT_ROOT, 'data/neural-networks/v3/keras-2752-v3.h5')
+    # heuristics.append(ANNHeuristic(model_path, label="MSE1layer"))
 
-    def asymmetric_mean_squared_error_02(y_true, y_pred):
-        return K.mean(K.square(y_pred - y_true) * K.square(K.sign(y_pred - y_true) + 0.2), axis=-1)
+    def asymmetric_mean_squared_error_095(y_true, y_pred):
+        return K.mean(K.square(y_pred - y_true) * K.square(K.sign(y_pred - y_true) + 0.95), axis=-1)
 
-    model_path = os.path.join(constants.PROJECT_ROOT, 'data/neural-networks/v3/keras-1024-1024-512-128-64-v3-amse02.h5')
-    heuristics.append(ANNHeuristic(model_path, "AMSE0.2", asymmetric_mean_squared_error_02))
+    model_path = os.path.join(constants.PROJECT_ROOT, 'data/neural-networks/v3/keras-1024-1024-512-128-64-v3-amse095-1.h5')
+    heuristics.append(ANNHeuristic(model_path, "AMSE0.95A", asymmetric_mean_squared_error_095))
 
-    def asymmetric_mean_squared_error_04(y_true, y_pred):
-        return K.mean(K.square(y_pred - y_true) * K.square(K.sign(y_pred - y_true) + 0.4), axis=-1)
-
-    model_path = os.path.join(constants.PROJECT_ROOT, 'data/neural-networks/v3/keras-1024-1024-512-128-64-v3-amse04.h5')
-    heuristics.append(ANNHeuristic(model_path, "AMSE0.4", asymmetric_mean_squared_error_04))
-
-    def asymmetric_mean_squared_error_06(y_true, y_pred):
-        return K.mean(K.square(y_pred - y_true) * K.square(K.sign(y_pred - y_true) + 0.6), axis=-1)
-
-    model_path = os.path.join(constants.PROJECT_ROOT, 'data/neural-networks/v3/keras-1024-1024-512-128-64-v3-amse06.h5')
-    heuristics.append(ANNHeuristic(model_path, "AMSE0.6", asymmetric_mean_squared_error_06))
-
-    def asymmetric_mean_squared_error_08(y_true, y_pred):
-        return K.mean(K.square(y_pred - y_true) * K.square(K.sign(y_pred - y_true) + 0.8), axis=-1)
-
-    model_path = os.path.join(constants.PROJECT_ROOT, 'data/neural-networks/v3/keras-1024-1024-512-128-64-v3-amse08.h5')
-    heuristics.append(ANNHeuristic(model_path, "AMSE0.8", asymmetric_mean_squared_error_08))
+    model_path = os.path.join(constants.PROJECT_ROOT, 'data/neural-networks/v3/keras-1024-1024-512-128-64-v3-amse095-3.h5')
+    heuristics.append(ANNHeuristic(model_path, "AMSE0.95B", asymmetric_mean_squared_error_095))
 
     boards_generator = RandomBoardsGenerator(4)
     return BoardSolvingExperiment(
@@ -82,7 +67,7 @@ def process_entry_point(**kwargs):
 
 
 if __name__ == "__main__":
-    output_file_path = constants.PROJECT_ROOT + "/data/experiments/all-heuristics-benchmark-v3-multi.csv"
+    output_file_path = constants.PROJECT_ROOT + "/data/experiments/all-heuristics-benchmark-v3-amse095.csv"
     kwargs = {"output_file_path": output_file_path}
 
     dataset_generator = DatasetGenerator(process_entry_point, kwargs, output_file_path, None)
