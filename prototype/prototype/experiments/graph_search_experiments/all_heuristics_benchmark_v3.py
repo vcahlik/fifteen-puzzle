@@ -49,11 +49,11 @@ def create_experiment(output_file_path):
     model_path = os.path.join(constants.PROJECT_ROOT, 'data/neural-networks/v3/keras-1024-1024-512-128-64-v3-amse08.h5')
     heuristics.append(ANNHeuristic(model_path, "AMSE0.8", asymmetric_mean_squared_error_08))
 
-    # def asymmetric_mean_squared_error_095(y_true, y_pred):
-    #     return K.mean(K.square(y_pred - y_true) * K.square(K.sign(y_pred - y_true) + 0.95), axis=-1)
-    #
-    # model_path = os.path.join(constants.PROJECT_ROOT, 'data/neural-networks/v3/keras-1024-1024-512-128-64-v3-amse095.h5')
-    # heuristics.append(ANNHeuristic(model_path, "AMSE0.95", asymmetric_mean_squared_error_095))
+    def asymmetric_mean_squared_error_095(y_true, y_pred):
+        return K.mean(K.square(y_pred - y_true) * K.square(K.sign(y_pred - y_true) + 0.95), axis=-1)
+
+    model_path = os.path.join(constants.PROJECT_ROOT, 'data/neural-networks/v3/keras-1024-1024-512-128-64-v3-amse095.h5')
+    heuristics.append(ANNHeuristic(model_path, "AMSE0.95", asymmetric_mean_squared_error_095))
 
     boards_generator = RandomBoardsGenerator(4)
     return BoardSolvingExperiment(
@@ -61,7 +61,7 @@ def create_experiment(output_file_path):
         heuristics,
         boards_generator,
         output_file_path=output_file_path,
-        include_optimal_solver=False)
+        include_optimal_solver=True)
 
 
 def process_entry_point(**kwargs):
