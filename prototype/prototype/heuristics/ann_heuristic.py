@@ -29,8 +29,8 @@ class ANNHeuristic(Heuristic):
 
         x = np.array(board.config)
         x_encoded = np.eye(board.N**2)[x].ravel()
-        y = self.get_model().predict(x_encoded.reshape(1, -1)).item()
-        return y
+        prediction = self.get_model().predict(x_encoded.reshape(1, -1)).item()
+        return max(prediction, 0)
 
     def name(self):
         if self.label is not None:
