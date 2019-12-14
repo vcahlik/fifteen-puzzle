@@ -224,7 +224,7 @@ class IDAStarSearch(GraphSearchAlgorithm):
 
             self.path = cost_limited_dfs.path
 
-            self.results[ResultType.SOLUTION_COST.name] = len(self.path) - 1
+            self.results[ResultType.SOLUTION_COST.name] = cost_limited_dfs.cost_limit
             self.results[ResultType.EXPANDED_NODES.name] = n_expanded
             self.results[ResultType.RUN_TIME.name] = time.time() - start_time
 
