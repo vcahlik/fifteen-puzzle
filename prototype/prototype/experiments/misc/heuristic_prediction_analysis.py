@@ -1,6 +1,6 @@
 from prototype.heuristics.cpp_pdb_heuristic import CppPatternDatabaseHeuristic
 from prototype.graph_search.search_algorithms import AStarSearch, IDAStarSearch
-from prototype.board import RandomBoardsGenerator
+from prototype.board import RandomBoardsGenerator, ChaoticShufflingBoardsGenerator
 from prototype.algorithm import ResultType
 from prototype.heuristics.ann_heuristic import ANNHeuristic
 from tensorflow.keras import backend as K
@@ -15,7 +15,7 @@ if __name__ == "__main__":
     with open(path, 'w') as f:
         f.write("PREDICTED,OPTIMAL_SOLUTION_COST\n")
 
-    boards_generator = RandomBoardsGenerator(4)
+    boards_generator = ChaoticShufflingBoardsGenerator(4, 100)
 
     ida_star = IDAStarSearch()
     pdb = CppPatternDatabaseHeuristic(8)
