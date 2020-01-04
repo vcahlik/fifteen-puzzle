@@ -10,7 +10,7 @@ class ResultType(Enum):
 
 class Algorithm:
     """
-    An algorithm solving the (N^2-1)-puzzle.
+    A base class for an algorithm solving the (N^2-1)-puzzle.
     """
 
     def __init__(self, goal_test):
@@ -30,10 +30,16 @@ class Algorithm:
         return self.__class__.__name__
 
     def get_result(self, result_type: ResultType):
+        """
+        Returns a single result.
+        """
         try:
             return self.results[result_type]
         except KeyError:
             return None
 
     def reset_results(self):
+        """
+        Resets the stored results to their defaults.
+        """
         self.results = Algorithm.get_default_results()

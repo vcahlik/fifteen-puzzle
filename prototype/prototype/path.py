@@ -3,6 +3,9 @@ import copy
 
 
 class Path:
+    """
+    A sequence of boards, which was obtained by sequentially performing moves.
+    """
     def __init__(self):
         self.boards = list()
 
@@ -13,20 +16,32 @@ class Path:
         return self.boards[key]
 
     def __reversed__(self):
+        """
+        Returns a reversed path.
+        """
         reversed_path = Path()
         reversed_path.boards = list(reversed(self.boards))
         return reversed_path
 
     def append(self, board):
+        """
+        Appends a board to the end of the path.
+        """
         self.boards.append(board)
 
     def concatenate(self, other):
+        """
+        Concatenates another path to this path.
+        """
         if not self.boards[-1] == other.boards[0]:
             raise RuntimeError("Can't concatenate these boards")
         self.boards = self.boards + other.boards[1:]
         return self
 
     def check_validity(self):
+        """
+        Checks whether the sequence of boards is valid, i.e. if it could have been obtained by moving the blank.
+        """
         if len(self) < 2:
             return
 

@@ -10,13 +10,15 @@ class Direction(Enum):
     """
     A direction in which the blank is moved.
     """
-
     UP = 0
     DOWN = 1
     LEFT = 2
     RIGHT = 3
 
     def blank_pos_change(self, N):
+        """
+        Calculates the new position of the blank after it has been moved in the specified direction.
+        """
         if self == Direction.UP:
             return N * -1
         elif self == Direction.DOWN:
@@ -27,6 +29,9 @@ class Direction(Enum):
             return 1
 
     def opposite(self):
+        """
+        Returns a direction opposite to the specified direction.
+        """
         if self == Direction.UP:
             return Direction.DOWN
         elif self == Direction.DOWN:
@@ -41,7 +46,6 @@ class Board:
     """
     A (N^2-1)-puzzle board with pebbles.
     """
-
     _solved_config = {
         2: array.array('l', (1, 2, 3, 0)),
         3: array.array('l', (1, 2, 3, 4, 5, 6, 7, 8, 0)),
@@ -59,6 +63,11 @@ class Board:
     _IGNORED_PEBBLE = -1
 
     def __init__(self, N, config=None):
+        """
+
+        :param N: number of pebbles in a single row or column (NxN grid)
+        :param config: the configuration of the pebbles
+        """
         self.N = N
         if config is None:
             self.config = array.array('l', self._solved_config[self.N])
@@ -78,15 +87,20 @@ class Board:
         return int(hashlib.sha1(self.config).hexdigest(), 16)
 
     def is_solved(self):
+        """
+        Determines whether the pebbles are in their goal configuration.
+        """
         return self.config == self._solved_config[self.N]
 
-    # Returns index_x, index_y
     def position_to_index(self, position):
+        """
+        Returns a tuple with pos_x, pos_y
+        """
         return position // self.N, position % self.N
 
     def valid_directions(self):
         """
-        Get directions in which the blank can be moved.
+        Gets directions in which the blank can be moved.
 
         :return: list of valid directions
         """
@@ -105,6 +119,9 @@ class Board:
         return directions
 
     def pebble_positions(self):
+        """
+        Gets the list of positions of all pebbles.
+        """
         positions = [None] * len(self.config)
         for position, pebble in enumerate(self.config):
             if pebble != self._IGNORED_PEBBLE:
@@ -112,6 +129,9 @@ class Board:
         return positions
 
     def pebble_positions_subset(self, pebbles):
+        """
+        Gets the list of positions of the specified pebbles.
+        """
         pebble_positions = self.pebble_positions()
         subset = list()
         subset.append(pebble_positions[0])  # Empty pebble's position at beginning
@@ -120,8 +140,10 @@ class Board:
                 subset.append(position)
         return subset
 
-    # TODO rename
     def pebble_positions_subset_cpp(self, pebbles):
+        """
+        Specifically used by the C++ pattern database.
+        """
         pebble_positions = self.pebble_positions()
         subset = list()
         subset.append(pebble_positions[0])  # Empty pebble's position at beginning
@@ -132,9 +154,17 @@ class Board:
         return subset
 
     def pebble_indexes(self):
+        """
+        Gets the list of the indexes of all pebbles.
+        """
         return [self.position_to_index(position) for position in self.pebble_positions()]
 
     def move_blank(self, direction):
+        """
+        Modifies the board by moving the blank to the specified direction.
+
+        :return: the moved pebble
+        """
         target_position = self.blank_position + direction.blank_pos_change(self.N)
         replaced_pebble = self.config[target_position]
 
@@ -145,8 +175,11 @@ class Board:
         return replaced_pebble
 
     def _count_pebble_inversions(self):
-        # TODO Source: https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
+        """
+        Counts the number of inversions in the pebble positions. Used in the solvability check.
 
+        Source: https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
+        """
         n_inverses = 0
         for i in range(0, len(self.config)):
             for j in range(i + 1, len(self.config)):
@@ -157,8 +190,11 @@ class Board:
         return n_inverses
 
     def is_solvable(self):
-        # TODO Source: https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
+        """
+        Determines whether the board is solvable.
 
+        Source: https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
+        """
         n_inverses = self._count_pebble_inversions()
         blank_pos_y_from_bottom = self.N - 1 - self.position_to_index(self.blank_position)[0]
 
@@ -175,6 +211,9 @@ class Board:
                 return bool(not n_inverses_is_odd)
 
     def randomize(self, enforce_solvability=True):
+        """
+        Randomizes the positions of pebbles using a random permutation.
+        """
         np.random.shuffle(self.config)
         self.blank_position = self.pebble_positions()[0]
         if enforce_solvability:
@@ -184,6 +223,11 @@ class Board:
         return self
 
     def shuffle(self, n_moves_min=10000, randomize_n_moves: bool = True):
+        """
+        Randomly shuffles the pebbles.
+
+        :param randomize_n_moves: randomly adds 1 to the n_moves, in order not to always end up with even or odd solution cost
+        """
         last_direction = None
 
         n_moves = n_moves_min
@@ -207,12 +251,26 @@ class Board:
         return np.array([np.argwhere(self.config == i)[0] for i in pebbles])
 
     def to_partial(self, pebbles):
+        """
+        Converts the board to a partial board.
+        """
         # TODO some issue here (invalid constructor arguments)
         return PartialBoard(self.get_pebble_indexes(pebbles), self.blank_position)
 
 
 class PartialBoard(Board):
+    """
+    A partial board where some pebbles are ignored (don't have assigned numbers).
+
+    Used in the calculation of the PDB heuristic.
+    """
+
     def __init__(self, N, pebbles):
+        """
+
+        :param N: number of pebbles in a single row or column (NxN grid)
+        :param pebbles: the pebbles which are not ignored
+        """
         super().__init__(N=N)
 
         for i, pebble in enumerate(self.config):
@@ -221,6 +279,10 @@ class PartialBoard(Board):
 
 
 class BoardsGenerator:
+    """
+    Base class for random boards generators.
+    """
+
     def __init__(self, N):
         self.N = N
 
@@ -229,10 +291,17 @@ class BoardsGenerator:
 
 
 class RandomBoardsGenerator(BoardsGenerator):
+    """
+    Generator of boards randomized by random permutations.
+    """
+
     def __init__(self, N):
         super().__init__(N)
 
     def random_board(self):
+        """
+        Returns a randomized board.
+        """
         board = Board(N=self.N)
         return board.randomize()
 
@@ -241,12 +310,19 @@ class RandomBoardsGenerator(BoardsGenerator):
 
 
 class ShufflingBoardsGenerator(BoardsGenerator):
+    """
+    Generator of boards randomized by random shuffling.
+    """
+
     def __init__(self, N, n_shuffles, randomize_n_moves=True):
         super().__init__(N)
         self.n_shuffles = n_shuffles
         self.randomize_n_moves = randomize_n_moves
 
     def random_board(self):
+        """
+        Returns a shuffled board.
+        """
         board = Board(N=self.N)
         return board.shuffle(self.n_shuffles, self.randomize_n_moves)
 
@@ -255,11 +331,23 @@ class ShufflingBoardsGenerator(BoardsGenerator):
 
 
 class ChaoticShufflingBoardsGenerator(BoardsGenerator):
+    """
+    Generator of boards randomized by random shuffling, where the number of shuffles is random.
+    """
+
     def __init__(self, N, n_shuffles_max):
+        """
+
+        :param N: number of pebbles in a single row or column (NxN grid)
+        :param n_shuffles_max: maximum number of shuffles
+        """
         super().__init__(N)
         self.n_shuffles_max = n_shuffles_max
 
     def random_board(self):
+        """
+        Returns a shuffled board.
+        """
         board = Board(N=self.N)
         n_shuffles = random.randint(0, self.n_shuffles_max)
         return board.shuffle(n_shuffles, False)
