@@ -4,6 +4,10 @@ from prototype.heuristics.heuristic import Heuristic
 
 
 class RandomForestHeuristic(Heuristic):
+    """
+    A heuristic function based on the random forest regressor.
+    """
+
     def __init__(self, model_path, label=None):
         self.model_path = model_path
         self.label = label
@@ -11,6 +15,9 @@ class RandomForestHeuristic(Heuristic):
         self._model = None
 
     def get_model(self):
+        """
+        Loads the saved random forest model from disk.
+        """
         if self._model is None:
             with open(self.model_path, 'rb') as f:
                 self._model = pickle.load(f)
@@ -18,6 +25,9 @@ class RandomForestHeuristic(Heuristic):
         return self._model
 
     def estimate_cost(self, board):
+        """
+        Estimate the optimal solution cost of a board.
+        """
         x = np.array(board.config)
         x_encoded = np.eye(board.N)[x].ravel()
         y = self.get_model().predict(x_encoded.reshape(1, -1)).item()

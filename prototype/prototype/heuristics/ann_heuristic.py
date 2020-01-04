@@ -3,6 +3,10 @@ from prototype.heuristics.heuristic import Heuristic
 
 
 class ANNHeuristic(Heuristic):
+    """
+    A heuristic function based on an artificial neural network model.
+    """
+
     def __init__(self, model_path, label=None, custom_loss=None, callback=None):
         self.model_path = model_path
         self.label = label
@@ -12,6 +16,10 @@ class ANNHeuristic(Heuristic):
         self._model = None
 
     def get_model(self):
+        """
+        Loads the saved ANN from disk.
+        """
+
         import tensorflow.keras  # Must be loaded in the worker process!
 
         if self._model is None:
@@ -24,6 +32,9 @@ class ANNHeuristic(Heuristic):
         return self._model
 
     def estimate_cost(self, board):
+        """
+        Estimate the optimal solution cost of a board.
+        """
         if self.callback is not None:
             self.callback(board)
 

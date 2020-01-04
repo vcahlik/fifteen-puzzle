@@ -13,6 +13,11 @@ PATTERN_DATABASE_FOLDER = os.path.join(constants.PROJECT_ROOT, "data/pattern-dat
 
 
 class Subproblem(Heuristic):
+    """
+    A subproblem of the pattern database heuristic.
+
+    The goal of the subproblem is to correctly place a subset of pebbles to their goal positions.
+    """
     ZERO_COST = 255
 
     def __init__(self, pebbles):
@@ -21,18 +26,19 @@ class Subproblem(Heuristic):
         self._db_coefficients = self._calculate_db_coefficients()
         self.db_folder_path = None
 
-    """
-    Size of the subproblem's database in bytes.
-    
-    :return: db size
-    """
     def _db_size(self):
+        """
+        Returns the size of the subproblem's database in bytes.
+        """
         size = 1
         for n_placements in range(16 - len(self.pebbles), 17):
             size = size * n_placements
         return size
 
     def cost(self, pebble_positions):
+        """
+        Returns the cost of solving the subproblem from the database.
+        """
         cost = self.db[self._db_index(pebble_positions)]
         if cost == self.ZERO_COST:
             return 0
@@ -55,6 +61,9 @@ class Subproblem(Heuristic):
         return readjustments
 
     def _calculate_db_coefficients(self):
+        """
+        Calculates the coefficients by which the pebble positions should be multiplied in order to get an index for the database.
+        """
         coefficients = []
         c = 1
         for i in range(16 - len(self.pebbles), 17):
@@ -63,6 +72,9 @@ class Subproblem(Heuristic):
         return list(reversed(coefficients))
 
     def _db_index(self, pebble_positions):
+        """
+        Calculates an index (=key) for the database.
+        """
         readjusted_positions = self._db_readjusted_positions(pebble_positions)
         coefficients = self._db_coefficients
         index = 0
@@ -71,15 +83,27 @@ class Subproblem(Heuristic):
         return index
 
     def has_cost(self, pebble_positions):
+        """
+        Determines whether the cost is stored in the database.
+        """
         return self.db[self._db_index(pebble_positions)] != 0
 
     def save_cost(self, pebble_positions, cost):
+        """
+        Saves the cost to the database.
+        """
         self.db[self._db_index(pebble_positions)] = cost if cost > 0 else self.ZERO_COST
 
     def db_file_path(self):
+        """
+        Gets the path of the database file.
+        """
         return os.path.join(self.db_folder_path, f"subproblem_{self.pebbles}.pkl")
 
     def pre_calculate_db(self):
+        """
+        Calculates the pattern database by a single backward BFS search.
+        """
         init_node = self.PreCalculationNode(PartialBoard(self.pebbles))
         open_nodes = FastLookupQueue()
         open_nodes.push_right(init_node)
@@ -109,6 +133,10 @@ class Subproblem(Heuristic):
             pickle.dump(self, f)
 
     class PreCalculationNode(Node):
+        """
+        A node used during the calculation of the database.
+        """
+
         def __init__(self, board, cost=0):
             super().__init__(board)
             self.cost = cost
@@ -153,20 +181,32 @@ _pattern_definitions = {
 
 
 class PatternDatabaseHeuristic(Heuristic):
+    """
+    A pattern database heuristic. Superseded by the C++ PDB heuristic.
+    """
     def __init__(self, max_pattern_size, weight=1):
         self.max_pattern_size = max_pattern_size
         self.subproblems = [Subproblem(pebbles) for pebbles in _pattern_definitions[max_pattern_size]]
         self.weight = weight
 
     def estimate_cost(self, board):
+        """
+        Estimate the optimal solution cost of a board.
+        """
         return self.weight * sum([subproblem.cost(board.pebble_positions_subset(subproblem.pebbles)) for subproblem in self.subproblems])
 
     def _default_folder(self):
+        """
+        Returns the default folder for storing the databases.
+        """
         subproblem_lengths = [len(subproblem.pebbles) for subproblem in self.subproblems]
         subfolder_name = f"patterns-maxlen-{max(subproblem_lengths)}"
         return os.path.join(PATTERN_DATABASE_FOLDER, subfolder_name)
 
     def pre_calculate_db(self, n_processes=4, folder_path=None):
+        """
+        Calculates the pattern databases for all subproblems paralelly by multiple processes.
+        """
         if folder_path is None:
             folder_path = self._default_folder()
         try:
@@ -185,6 +225,9 @@ class PatternDatabaseHeuristic(Heuristic):
         debug_print("Database precalculation complete.")
 
     def load_db(self, folder_path=None):
+        """
+        Loads the pattern databases from disk.
+        """
         if folder_path is None:
             folder_path = self._default_folder()
 

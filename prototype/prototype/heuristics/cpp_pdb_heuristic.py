@@ -8,6 +8,11 @@ PATTERN_DATABASE_FOLDER = os.path.join(constants.PROJECT_ROOT, "data/pattern-dat
 
 
 class CppSubproblemPatternDatabase(Heuristic):
+    """
+    A subproblem of the C++ pattern database heuristic.
+
+    The goal of the subproblem is to correctly place a subset of pebbles to their goal positions.
+    """
     def __init__(self, pebbles):
         self.pebbles = pebbles
         self.n_db_pebbles = len(self.pebbles) + 1
@@ -15,13 +20,22 @@ class CppSubproblemPatternDatabase(Heuristic):
         self._db_coefficients = self._calculate_db_coefficients()
 
     def load_db(self):
+        """
+        Loads the database from disk.
+        """
         db_file = open(self.db_file_path(), 'rb')
         self.db = bytearray(db_file.read())
 
     def cost(self, pebble_positions):
+        """
+        Returns the value from the database.
+        """
         return self.db[self._db_index(pebble_positions)]
 
     def _calculate_db_coefficients(self):
+        """
+        Calculates the coefficient by which to multiply the pebble positions in order to get the key for the database.
+        """
         index_coefficients = []
         coefficient = 1
         for i in range(17 - self.n_db_pebbles, 17):
@@ -29,20 +43,10 @@ class CppSubproblemPatternDatabase(Heuristic):
             coefficient = coefficient * i
         return list(reversed(index_coefficients))
 
-    # def _db_readjusted_positions(self, pebble_positions):
-    #     readjustments = [0 for _ in pebble_positions]
-    #
-    #     for i, current_position in enumerate(pebble_positions[:-1]):
-    #         for j, latter_position in enumerate(pebble_positions[i + 1:]):
-    #             if latter_position > current_position:
-    #                 readjustments[i + j + 1] = readjustments[i + j + 1] - 1
-    #
-    #     for i, readjustment in enumerate(readjustments):
-    #         readjustments[i] = pebble_positions[i] + readjustment
-    #
-    #     return readjustments
-
     def _db_index(self, pebble_positions):
+        """
+        Calculates the "index" (=key) for the database for the given configuration.
+        """
         index = 0
         readjustments = [0] * self.n_db_pebbles
 
@@ -63,6 +67,9 @@ class CppSubproblemPatternDatabase(Heuristic):
         # return index
 
     def db_file_path(self):
+        """
+        Determines the file path of the database.
+        """
         return os.path.join(PATTERN_DATABASE_FOLDER, f"Subproblem-{'-'.join([str(pebble) for pebble in self.pebbles])}.bin")
 
 
@@ -114,6 +121,12 @@ _pattern_definitions = {
 
 
 class CppPatternDatabaseHeuristic(Heuristic):
+    """
+    A "C++" pattern database heuristic.
+
+    In this heuristic, the pattern databases were calculated by a C++ implementation.
+    This heuristic merely loads the results from the databases.
+    """
     def __init__(self, max_pattern_size=2, weight=1, callback=None):
         self.max_pattern_size = max_pattern_size
         self.subproblems = [CppSubproblemPatternDatabase(pebbles) for pebbles in _pattern_definitions[max_pattern_size]]
@@ -121,12 +134,18 @@ class CppPatternDatabaseHeuristic(Heuristic):
         self.callback = callback
 
     def estimate_cost(self, board):
+        """
+        Estimate the optimal solution cost of a board.
+        """
         if self.callback is not None:
             self.callback(board)
 
         return self.weight * sum([subproblem.cost(board.pebble_positions_subset_cpp(subproblem.pebbles)) for subproblem in self.subproblems])
 
     def load_db(self):
+        """
+        Loads the subproblems' databases from disk.
+        """
         debug_print("Database loading from disk.")
 
         for subproblem in self.subproblems:
