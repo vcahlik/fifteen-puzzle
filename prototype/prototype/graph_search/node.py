@@ -4,6 +4,9 @@ from prototype.path import Path
 
 
 class Node:
+    """
+    A node of a search algorithm.
+    """
     def __init__(self, board):
         self.board = board
 
@@ -15,6 +18,9 @@ class Node:
 
 
 class ForwardSearchNode(Node):
+    """
+    A node for forward search algorithms (most search algorithms are forward).
+    """
     def __init__(self, board, parent=None, last_move_direction=None):
         super().__init__(board)
         self.parent = parent
@@ -25,6 +31,9 @@ class ForwardSearchNode(Node):
         self.last_move_direction = last_move_direction
 
     def children(self, shuffle):
+        """
+        Returns all child nodes of a node.
+        """
         children = []
         for direction in self.board.valid_directions():
             if direction.opposite() != self.last_move_direction:
@@ -37,6 +46,9 @@ class ForwardSearchNode(Node):
         return children
 
     def path(self):
+        """
+        Returns a path to the node from the initial state.
+        """
         path = Path()
         curr_node = self
 
@@ -48,6 +60,9 @@ class ForwardSearchNode(Node):
 
 
 class BackwardSearchNode(Node):
+    """
+    A node for backward search algorithms (for example, part of bidirectional search).
+    """
     def __init__(self, board, parent=None, last_move_direction=None):
         super().__init__(board)
         self.parent = parent
@@ -58,6 +73,9 @@ class BackwardSearchNode(Node):
         self.last_move_direction = last_move_direction
 
     def children(self, shuffle):
+        """
+        Returns all child nodes of a node.
+        """
         children = []
         for direction in self.board.valid_directions():
             if direction.opposite() != self.last_move_direction:
@@ -70,6 +88,9 @@ class BackwardSearchNode(Node):
         return children
 
     def path(self):
+        """
+        Returns a path to the node from the initial state.
+        """
         path = Path()
         curr_node = self
 

@@ -12,6 +12,10 @@ class _GoalFoundSignal(Exception):
 
 
 class BidirectionalBFS(GraphSearchAlgorithm):
+    """
+    The bidirectional breadth-first search algorithm.
+    """
+
     def __init__(self, las_vegas_randomization=False):
         super().__init__(goal_test=None)
         self.las_vegas_randomization = las_vegas_randomization
@@ -25,6 +29,9 @@ class BidirectionalBFS(GraphSearchAlgorithm):
         self.init_board = None
 
     def _reset(self):
+        """
+        Resets the run of the algorithm.
+        """
         self.path = None
         self.start_time = None
         self.open_nodes_forward = FastLookupQueue()
@@ -33,6 +40,9 @@ class BidirectionalBFS(GraphSearchAlgorithm):
         self.closed_nodes_backward = set()
 
     def run(self, board):
+        """
+        Runs the algorithm, starting at the specified board.
+        """
         self._reset()
         self.init_board = board
         self.start_time = time.time()
@@ -50,6 +60,9 @@ class BidirectionalBFS(GraphSearchAlgorithm):
         raise GoalNotFoundError()
 
     def _forward_step(self):
+        """
+        Advances the forward pass of the algorithm.
+        """
         node = self.open_nodes_forward.pop_left()
         if node.board.is_solved():
             self._finalize(path=node.path())
@@ -63,6 +76,9 @@ class BidirectionalBFS(GraphSearchAlgorithm):
         self.closed_nodes_forward.add(node)
 
     def _backward_step(self):
+        """
+        Advances the backward pass of the algorithm.
+        """
         node = self.open_nodes_backward.pop_left()
         if node.board == self.init_board:
             self._finalize(path=node.path())
@@ -76,6 +92,9 @@ class BidirectionalBFS(GraphSearchAlgorithm):
         self.closed_nodes_backward.add(node)
 
     def _finalize(self, path):
+        """
+        Helper function that stores the statistics of the run.
+        """
         n_expanded = len(self.closed_nodes_forward) + len(self.closed_nodes_backward) + 1
 
         self.path = path

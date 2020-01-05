@@ -5,6 +5,10 @@ from prototype.algorithm import Algorithm
 
 
 class Experiment:
+    """
+    A base class for experiments.
+    """
+
     def __init__(self,
                  n_runs: int = -1,
                  output_file_path=None):
