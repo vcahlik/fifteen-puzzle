@@ -7,6 +7,10 @@ from prototype.graph_search.search_algorithms import IDAStarSearch
 
 
 class BoardSolvingExperiment(Experiment):
+    """
+    An experiment in which random boards solved with different algorithms and heuristics.
+    """
+
     def __init__(self,
                  algorithms: list,
                  heuristics: list,
@@ -23,6 +27,9 @@ class BoardSolvingExperiment(Experiment):
         self.board_no = 0
 
     def print_csv_column_names_row(self):
+        """
+        Prints the header row of the CSV.
+        """
         column_names = list()
 
         column_names.append("PROCESS_ID")
@@ -40,6 +47,9 @@ class BoardSolvingExperiment(Experiment):
             atomic_row_write(self.output_file_path, row)
 
     def print_csv_results_row(self, algorithm, heuristic):
+        """
+        Prints a single CSV row with results.
+        """
         algorithm_results = ["" if value is None else str(round(value, 6)) for value in algorithm.results.values()]
 
         values = list()
@@ -57,12 +67,18 @@ class BoardSolvingExperiment(Experiment):
             atomic_row_write(self.output_file_path, row)
 
     def _solve(self, board, algorithm, heuristic):
+        """
+        Runs the specified algorithm with specified heuristic on the speficied board an prints the results to a CSV.
+        """
         algorithm.heuristic = heuristic
         algorithm.run(board)
 
         self.print_csv_results_row(algorithm, heuristic)
 
     def start(self):
+        """
+        Starts the experiment.
+        """
         try:
             ida_star = IDAStarSearch()
             admissible_h = self.heuristics[0]  # The first heuristic should be admissible!

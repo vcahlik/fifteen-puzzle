@@ -12,6 +12,10 @@ class _GoalFoundSignal(Exception):
 
 
 class BidirectionalAStarSearch(GraphSearchAlgorithm):
+    """
+    The bidirectional A* algorithm. Currently does not guarantee optimality (even with consistent heuristics).
+    """
+
     def __init__(self, forward_heuristic=None, backward_heuristic=None, las_vegas_randomization=False):
         super().__init__(goal_test=None)
         self.forward_heuristic = forward_heuristic
@@ -27,6 +31,9 @@ class BidirectionalAStarSearch(GraphSearchAlgorithm):
         self.init_board = None
 
     def _reset(self):
+        """
+        Resets the run of the algorithm.
+        """
         self.path = None
         self.start_time = None
         self.open_nodes_forward = PriorityQueue()
@@ -35,6 +42,9 @@ class BidirectionalAStarSearch(GraphSearchAlgorithm):
         self.closed_nodes_backward = set()
 
     def run(self, board):
+        """
+        Runs the algorithm, starting from the specified board.
+        """
         self._reset()
         self.init_board = board
         self.backward_heuristic.set_goal(board)
@@ -55,6 +65,9 @@ class BidirectionalAStarSearch(GraphSearchAlgorithm):
         raise GoalNotFoundError()
 
     def _forward_step(self):
+        """
+        Advances the forward pass of the algorithm.
+        """
         node = self.open_nodes_forward.pop()
         if node.board.is_solved():
             self._finalize(path=node.path())
@@ -79,6 +92,9 @@ class BidirectionalAStarSearch(GraphSearchAlgorithm):
         self.closed_nodes_forward.add(node)
 
     def _backward_step(self):
+        """
+        Advances the backward pass of the algorithm.
+        """
         node = self.open_nodes_backward.pop()
         if node.board == self.init_board:
             self._finalize(path=node.path())
@@ -103,6 +119,9 @@ class BidirectionalAStarSearch(GraphSearchAlgorithm):
         self.closed_nodes_backward.add(node)
 
     def _finalize(self, path):
+        """
+        Helper function that stores the statistics of the run.
+        """
         n_expanded = len(self.closed_nodes_forward) + len(self.closed_nodes_backward) + 1
 
         self.path = path

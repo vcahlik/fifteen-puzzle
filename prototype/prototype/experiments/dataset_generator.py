@@ -6,6 +6,10 @@ import datetime
 
 
 class DatasetGenerator:
+    """
+    Generates a dataset CSV file using multiple processes.
+    """
+
     def __init__(self, entry_point, kwargs, dataset_path, column_names_write_function=None):
         self.entry_point = entry_point
         self.kwargs = kwargs
@@ -21,6 +25,9 @@ class DatasetGenerator:
                 self.column_names_write_function()
 
     def run(self, n_processes=-1):
+        """
+        Runs the experiment from the specified entry_point with multiple processes.
+        """
         if n_processes < 1:
             n_processes = multiprocessing.cpu_count()
 

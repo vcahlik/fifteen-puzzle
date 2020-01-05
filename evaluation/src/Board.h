@@ -5,6 +5,9 @@
 #include <vector>
 #include <array>
 
+/**
+ * The index of the pebble position, storing a row and a column.
+ */
 struct PebbleIndex {
 public:
     explicit PebbleIndex(int row = 0, int col = 0);
@@ -13,6 +16,9 @@ public:
     int col;
 };
 
+/**
+ * Class representing boards with pebbles.
+ */
 class Board {
 public:
     enum class Direction {
@@ -31,20 +37,47 @@ public:
 
     bool operator!=(const Board &other) const;
 
+    /**
+     * Determines whether the board is in a solved state.
+     */
     virtual bool isSolved() const;
 
+    /**
+     * Returns an array with the indexes of the pebbles.
+     */
     virtual std::array<PebbleIndex, 16> getPebbleIndexes() const;
 
+    /**
+     * Returns a vector of directions of the currently valid moves.
+     */
     const std::vector<Board::Direction> &getValidDirections() const;
 
+    /**
+     * Returns a direction opposite to the specified direction.
+     */
     static Direction getOppositeDirection(Direction direction);
 
+    /**
+     * Returns the positions of the blank and the pebbles.
+     */
     std::vector<int> getPebblePositionsWithBlank(std::vector<int> pebbles) const;
 
+    /**
+     * Moves the blank in the specified direction.
+     */
     int moveBlank(Direction direction);
 
+    /**
+     * Randomly shuffles the board.
+     * @param minMovesCnt
+     * @param randomize Whether to randomly add 1 to the moves count (in order not to always return boards with an even or odd optimal solution cost)
+     */
     void shuffle(int minMovesCnt, bool randomize=false);
 
+    /**
+     * Calculates the hash of the board using the pebble positions.
+     * @return
+     */
     size_t hash() const;
 
     friend std::ostream& operator<<(std::ostream& os, const Board& board);
@@ -61,10 +94,19 @@ protected:
     std::array<int, 16> pebblePositions;
 
 private:
+    /**
+     * Calculates the positions of the pebbles.
+     */
     void calculatePebblePositions();
 
+    /**
+     * Conerts a pebble position to a pebble index.
+     */
     static PebbleIndex positionToIndex(int position);
 
+    /**
+     * Calculates the change of the position of the blank after it has been moved in the specified direction.
+     */
     static int getBlankPositionChange(Direction direction);
 
 };

@@ -8,14 +8,24 @@ import time
 
 
 class GraphSearchAlgorithm(Algorithm):
+    """
+    The base class for all graph search algorithms.
+    """
+
     def __init__(self, goal_test=Board.is_solved):
         super().__init__(goal_test)
 
     def run(self, board):
+        """
+        Runs the algorithm.
+        """
         pass
 
 
 class BFS(GraphSearchAlgorithm):
+    """
+    The breadth-first search algorithm.
+    """
     def __init__(self, goal_test=Board.is_solved, las_vegas_randomization=False):
         super().__init__(goal_test)
         self.las_vegas_randomization = las_vegas_randomization
@@ -23,9 +33,15 @@ class BFS(GraphSearchAlgorithm):
         self.path = None
 
     def _reset(self):
+        """
+        Resets the run of the algorithm.
+        """
         self.path = None
 
     def run(self, board):
+        """
+        Runs the algorithm, starting at the specified board.
+        """
         self._reset()
         open_nodes = FastLookupQueue()
         open_nodes.push_right(ForwardSearchNode(board))
@@ -55,6 +71,9 @@ class BFS(GraphSearchAlgorithm):
 
 
 class DFS(GraphSearchAlgorithm):
+    """
+    The depth-first search algorithm (specifically, the depth-limited search).
+    """
     def __init__(self, heuristic=None, goal_test=Board.is_solved, cost_limit=None, las_vegas_randomization=False):
         super().__init__(goal_test)
         self.heuristic = heuristic
@@ -64,9 +83,15 @@ class DFS(GraphSearchAlgorithm):
         self.path = None
 
     def reset(self):
+        """
+        Resets the run of the algorithm.
+        """
         self.path = None
 
     def run(self, board):
+        """
+        Runs the algorithm, starting at the specified board.
+        """
         self.reset()
         open_nodes = FastLookupQueue()
         open_nodes.push_right(ForwardSearchNode(board))
@@ -99,6 +124,10 @@ class DFS(GraphSearchAlgorithm):
 
 
 class AStarSearch(GraphSearchAlgorithm):
+    """
+    The A* search algorithm.
+    """
+
     def __init__(self, heuristic=None, goal_test=Board.is_solved, las_vegas_randomization=False):
         super().__init__(goal_test)
         self.heuristic = heuristic
@@ -107,10 +136,16 @@ class AStarSearch(GraphSearchAlgorithm):
         self.path = None
 
     def reset(self):
+        """
+        Resets the run of the algorithm.
+        """
         self.path = None
         self.reset_results()
 
     def run(self, board):
+        """
+        Runs the algorithm, starting at the specified board.
+        """
         self.reset()
         open_nodes = PriorityQueue()
         open_nodes.push(ForwardSearchNode(board), self.heuristic.estimate_cost(board))
@@ -145,6 +180,10 @@ class AStarSearch(GraphSearchAlgorithm):
 
 
 class BackwardAStarSearch(GraphSearchAlgorithm):
+    """
+    The backward A* search algorithm (runs from the goal state to the specified starting state).
+    """
+
     def __init__(self, heuristic=None, las_vegas_randomization=False):
         super().__init__(goal_test=None)
         self.heuristic = heuristic
@@ -153,10 +192,16 @@ class BackwardAStarSearch(GraphSearchAlgorithm):
         self.path = None
 
     def reset(self):
+        """
+        Resets the run of the algorithm.
+        """
         self.path = None
         self.reset_results()
 
     def run(self, goal_board):
+        """
+        Runs the algorithm, starting at the goal state and ending at the specified state.
+        """
         self.reset()
         self.heuristic.set_goal(goal_board)
         open_nodes = PriorityQueue()
@@ -193,6 +238,9 @@ class BackwardAStarSearch(GraphSearchAlgorithm):
 
 
 class IDAStarSearch(GraphSearchAlgorithm):
+    """
+    The iterative deepening A* algorithm.
+    """
     def __init__(self, heuristic=None, goal_test=Board.is_solved, las_vegas_randomization=False):
         super().__init__(goal_test)
         self.heuristic = heuristic
@@ -201,10 +249,16 @@ class IDAStarSearch(GraphSearchAlgorithm):
         self.path = None
 
     def reset(self):
+        """
+        Resets the run of the algorithm.
+        """
         self.path = None
         self.reset_results()
 
     def run(self, board):
+        """
+        Runs the algorithm, starting at the specified board.
+        """
         self.reset()
         initial_cost_limit = int(self.heuristic.estimate_cost(board))
         cost_limited_dfs = DFS(self.heuristic, self.goal_test, initial_cost_limit, self.las_vegas_randomization)
