@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Cahlik"
+  given-names: "Vojtech"
+  orcid: "https://orcid.org/0000-0002-4222-8746"
+- family-names: "Surynek"
+  given-names: "Pavel"
+  orcid: "https://orcid.org/0000-0001-7200-0542"
+title: "Fifteen Puzzle"
+url: "https://github.com/vcahlik/fifteen-puzzle"
+preferred-citation:
+  type: proceedings
+  authors:
+  - family-names: "Cahlik"
+    given-names: "Vojtech"
+    orcid: "https://orcid.org/0000-0002-4222-8746"
+  - family-names: "Surynek"
+    given-names: "Pavel"
+    orcid: "https://orcid.org/0000-0001-7200-0542"
+  doi: "10.1007/978-3-030-70594-7_12"
+  url: "https://doi.org/10.1007/978-3-030-70594-7_12"
+  collection-title: "Computational Intelligence: 11th International Joint Conference, IJCCI 2019, Vienna, Austria, September 17--19, 2019, Revised Selected Papers"
+  start: 291
+  end: 312
+  title: "Near Optimal Solving of the (N2-1)-puzzle Using Heuristics Based on Artificial Neural Networks"
+  publisher: "Springer International Publishing"
+  year: 2021

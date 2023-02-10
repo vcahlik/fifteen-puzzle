@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <array>
+#include <ostream>
 
 /**
  * The index of the pebble position, storing a row and a column.
@@ -78,7 +79,7 @@ public:
      * Calculates the hash of the board using the pebble positions.
      * @return
      */
-    size_t hash() const;
+    std::size_t hash() const;
 
     friend std::ostream& operator<<(std::ostream& os, const Board& board);
 
