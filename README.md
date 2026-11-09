@@ -81,7 +81,7 @@ The dataset was collected using IDA* with the 7-8 pattern database heuristic. Th
 
 ## Citing
 
-In case you find this repository or dataset helpful, feel free to cite our related publication [Near Optimal Solving of the (N2-1)-puzzle Using Heuristics Based on Artificial Neural Networks](https://doi.org/10.1007/978-3-030-70594-7_12):
+In the case that you find this repository or dataset helpful, feel free to cite the published paper [Near Optimal Solving of the (N2-1)-puzzle Using Heuristics Based on Artificial Neural Networks](https://doi.org/10.1007/978-3-030-70594-7_12):
 
     @inbook{Cahlik2021,
         title        = {Near Optimal Solving of the (N2-1)-puzzle Using Heuristics Based on Artificial Neural Networks},
